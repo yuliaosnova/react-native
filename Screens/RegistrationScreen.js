@@ -21,12 +21,12 @@ export default function RegistrationScreen({ navigation }) {
       source={require("../assets/images/bg.jpg")}
       style={styles.image}
     >
-      <TouchableOpacity style={styles.add}>
-        <View style={styles.addBtn}></View>
-        <PlusSvg style={styles.plus} />
-      </TouchableOpacity>
-
       <View style={styles.form}>
+        <View style={styles.add}>
+          <TouchableOpacity style={styles.addBtn}>
+            <PlusSvg style={styles.plus} />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.title}>Реєстрація</Text>
         <View>
           <TextInput
@@ -79,7 +79,9 @@ export default function RegistrationScreen({ navigation }) {
         >
           <Text style={styles.link}>Вже є акаунт? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={[styles.link, { textDecorationLine: "underline" }]}>Увійти</Text>
+            <Text style={[styles.link, { textDecorationLine: "underline" }]}>
+              Увійти
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -109,7 +111,8 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
-    bottom: 135,
+    position: "absolute",
+    top: -60,
     zIndex: 2,
   },
 
@@ -124,10 +127,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     top: 80,
     left: 107,
-  },
-  plus: {
-    top: 61,
-    left: 113,
   },
   title: {
     fontFamily: "Roboto",
