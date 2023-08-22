@@ -10,7 +10,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
 } from "react-native";
 
 import PlusSvg from "../assets/icons/plus.svg";
