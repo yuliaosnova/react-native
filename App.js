@@ -4,7 +4,6 @@ import { useFonts } from 'expo-font';
 
 import RegistrationScreen from './Screens/RegistrationScreen';
 import LoginScreen from './Screens/LoginScreen';
-import { useCallback } from 'react';
 
 export default function App() {
 	const [fontsLoaded] = useFonts({

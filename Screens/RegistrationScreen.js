@@ -6,6 +6,11 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert,
 } from "react-native";
 
 import PlusSvg from "../assets/icons/plus.svg";
@@ -16,76 +21,105 @@ export default function RegistrationScreen({ navigation }) {
   const [isMailFocused, setIsMailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
+  const [name, setName] = useState("");
+  const [mail, setMail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const ckickHandler = () => {
+	console.log(`name: ${name}, mail: ${mail}, password: ${password}`);
+ };
+
   return (
-    <ImageBackground
-      source={require("../assets/images/bg.jpg")}
-      style={styles.image}
-    >
-      <View style={styles.form}>
-        <View style={styles.add}>
-          <TouchableOpacity style={styles.addBtn}>
-            <PlusSvg style={styles.plus} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ImageBackground
+        source={require("../assets/images/bg.jpg")}
+        style={styles.image}
+      >
+        <View style={styles.form}>
+          <View style={styles.add}>
+            <TouchableOpacity style={styles.addBtn}>
+              <PlusSvg style={styles.plus} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.title}>Реєстрація</Text>
+          <View>
+            <TextInput
+              style={[
+                styles.input,
+                isNameFocused && { borderColor: "#FF6C00" },
+              ]}
+              placeholder="Логін"
+              value={name}
+              placeholderTextColor="#BDBDBD"
+              onBlur={() => setIsNameFocused(false)}
+              onFocus={() => setIsNameFocused(true)}
+              onChangeText={setName}
+            ></TextInput>
+          </View>
+          <View>
+            <TextInput
+              style={[
+                styles.input,
+                isMailFocused && { borderColor: "#FF6C00" },
+              ]}
+              placeholder="Адреса електронної пошти"
+              value={mail}
+              placeholderTextColor="#BDBDBD"
+              autoComplete="email"
+              onBlur={() => setIsMailFocused(false)}
+              onFocus={() => setIsMailFocused(true)}
+              onChangeText={setMail}
+            ></TextInput>
+          </View>
+          <View>
+            <KeyboardAvoidingView
+              behavior={Platform.OS == "ios" ? "padding" : "height"}
+            >
+              <TextInput
+                style={[
+                  styles.input,
+                  isPasswordFocused && { borderColor: "#FF6C00" },
+                ]}
+                secureTextEntry={showPassword ? false : true}
+                placeholder="Пароль"
+                value={password}
+                placeholderTextColor="#BDBDBD"
+                autoComplete="password"
+                onBlur={() => setIsPasswordFocused(false)}
+                onFocus={() => setIsPasswordFocused(true)}
+                onChangeText={setPassword}
+              ></TextInput>
+            </KeyboardAvoidingView>
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Text style={styles.showPassword}>
+                {showPassword ? "Сховати" : "Показати"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={styles.registerBtn}
+            accessibilityLabel="Register button"
+				onPress={ckickHandler}
+          >
+            <Text style={styles.btnText}>Зареєструватися</Text>
           </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginBottom: 30,
+            }}
+          >
+            <Text style={styles.link}>Вже є акаунт? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={[styles.link, { textDecorationLine: "underline" }]}>
+                Увійти
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <Text style={styles.title}>Реєстрація</Text>
-        <View>
-          <TextInput
-            style={[styles.input, isNameFocused && { borderColor: "#FF6C00" }]}
-            placeholder="Логін"
-            placeholderTextColor="#BDBDBD"
-            onBlur={() => setIsNameFocused(false)}
-            onFocus={() => setIsNameFocused(true)}
-          ></TextInput>
-        </View>
-        <View>
-          <TextInput
-            style={[styles.input, isMailFocused && { borderColor: "#FF6C00" }]}
-            placeholder="Адреса електронної пошти"
-            placeholderTextColor="#BDBDBD"
-            onBlur={() => setIsMailFocused(false)}
-            onFocus={() => setIsMailFocused(true)}
-          ></TextInput>
-        </View>
-        <View>
-          <TextInput
-            style={[
-              styles.input,
-              isPasswordFocused && { borderColor: "#FF6C00" },
-            ]}
-            secureTextEntry={showPassword ? false : true}
-            placeholder="Пароль"
-            placeholderTextColor="#BDBDBD"
-            onBlur={() => setIsPasswordFocused(false)}
-            onFocus={() => setIsPasswordFocused(true)}
-          ></TextInput>
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text style={styles.showPassword}>
-              {showPassword ? "Сховати" : "Показати"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          style={styles.registerBtn}
-          accessibilityLabel="Register button"
-        >
-          <Text style={styles.btnText}>Зареєструватися</Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginBottom: 30,
-          }}
-        >
-          <Text style={styles.link}>Вже є акаунт? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={[styles.link, { textDecorationLine: "underline" }]}>
-              Увійти
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ImageBackground>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 }
 
