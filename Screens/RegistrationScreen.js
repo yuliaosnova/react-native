@@ -37,7 +37,7 @@ export default function RegistrationScreen({ navigation }) {
         <View style={styles.form}>
           <View style={styles.add}>
             <TouchableOpacity style={styles.addBtn}>
-              <PlusSvg style={styles.plus} />
+              <PlusSvg />
             </TouchableOpacity>
           </View>
           <Text style={styles.title}>Реєстрація</Text>
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
     top: -60,
     zIndex: 2,
   },
-
   addBtn: {
     width: 25,
     height: 25,
