@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigation } from '@react-navigation/native';
 import {
   ImageBackground,
   StyleSheet,
@@ -12,9 +13,9 @@ import {
   Keyboard,
 } from "react-native";
 
-import PlusSvg from "../assets/icons/plus.svg";
+import PlusSvg from "../../assets/icons/plus.svg";
 
-export default function RegistrationScreen({ navigation }) {
+export default function RegistrationScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [isMailFocused, setIsMailFocused] = useState(false);
@@ -24,6 +25,8 @@ export default function RegistrationScreen({ navigation }) {
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigation = useNavigation();
+
   const ckickHandler = () => {
 	console.log(`name: ${name}, mail: ${mail}, password: ${password}`);
  };
@@ -31,7 +34,7 @@ export default function RegistrationScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground
-        source={require("../assets/images/bg.jpg")}
+        source={require("../../assets/images/bg.jpg")}
         style={styles.image}
       >
         <View style={styles.form}>

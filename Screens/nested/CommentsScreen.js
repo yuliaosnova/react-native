@@ -11,15 +11,15 @@ import {
   View,
 } from "react-native";
 
-import ArrLeftSvg from "../assets/icons/arrow-left.svg";
-import ArrAppSvg from "../assets/icons/arrow-up.svg";
+import ArrLeftSvg from "../../assets/icons/arrow-left.svg";
+import ArrAppSvg from "../../assets/icons/arrow-up.svg";
 import { useState } from "react";
 
 const comments = [
   {
     id: 1,
     userId: 2,
-    userAvatar: require("../assets/images/avatar-2.png"),
+    userAvatar: require("../../assets/images/avatar-2.png"),
     date: "09 червня, 2020",
     time: "08:40",
     text: "Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!",
@@ -27,7 +27,7 @@ const comments = [
   {
     id: 2,
     userId: 1,
-    userAvatar: require("../assets/images/user-photo.jpg"),
+    userAvatar: require("../../assets/images/user-photo.jpg"),
     date: "09 червня, 2020",
     time: "09:14",
     text: "A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.",
@@ -35,7 +35,7 @@ const comments = [
   {
     id: 3,
     userId: 2,
-    userAvatar: require("../assets/images/avatar-2.png"),
+    userAvatar: require("../../assets/images/avatar-2.png"),
     date: "09 червня, 2020",
     time: "09:20",
     text: "Thank you! That was very helpful!",
@@ -58,14 +58,14 @@ export default function CommentsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <ArrLeftSvg style={styles.arrow} />
         <Text style={styles.title}>Коментарі</Text>
-      </View>
+      </View> */}
 
       <View style={styles.main}>
         <View style={styles.placeholder}>
-          <Image source={require("../assets/images/sunset-photo.jpg")}></Image>
+          <Image source={require("../../assets/images/sunset-photo.jpg")}></Image>
         </View>
 
         <View style={styles.comentsList}>
@@ -111,25 +111,8 @@ export default function CommentsScreen() {
 
 const styles = StyleSheet.create({
   container: {
-   //  flex: 1,
-  },
-  header: {
-    width: Dimensions.get("window").width,
-    height: 44,
-    marginTop: 40,
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.09)",
-    flexDirection: "row",
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "500",
-    color: "#212121",
-    marginLeft: "30%",
-  },
-  arrow: {
-    marginLeft: 15,
+   flex: 1,
+    backgroundColor: "#fff",
   },
   main: {
     marginLeft: "auto",

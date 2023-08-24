@@ -1,13 +1,9 @@
-import { useState } from "react";
 import {
   ImageBackground,
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
   TouchableWithoutFeedback,
   Keyboard,
   Image,
@@ -15,19 +11,17 @@ import {
   Dimensions,
 } from "react-native";
 
-import CrossSvg from "../assets/icons/cross-icon.svg";
-import LogOutSvg from "../assets/icons/log-out.svg";
-import MessageSvg from "../assets/icons/message-icon.svg";
-import LikeSvg from "../assets/icons/thumbs-up.svg";
-import MapPinSvg from "../assets/icons/map-pin.svg";
-import GridSvg from "../assets/icons/grid.svg";
-import PlusSvg from "../assets/icons/plus.svg";
-import UserSvg from "../assets/icons/user.svg";
+import CrossSvg from "../../assets/icons/cross-icon.svg";
+import LogOutSvg from "../../assets/icons/log-out.svg";
+import MessageSvg from "../../assets/icons/message-icon.svg";
+import LikeSvg from "../../assets/icons/thumbs-up.svg";
+import MapPinSvg from "../../assets/icons/map-pin.svg";
+
 
 const posts = [
   {
     id: 1,
-    image: require("../assets/images/forest-photo.jpg"),
+    image: require("../../assets/images/forest-photo.jpg"),
     title: "Ліс",
     commentsQuantity: "8",
     likesQuantity: "153",
@@ -35,7 +29,7 @@ const posts = [
   },
   {
     id: 2,
-    image: require("../assets/images/sunset-photo.jpg"),
+    image: require("../../assets/images/sunset-photo.jpg"),
     title: "Захід на Чорному морі",
     commentsQuantity: "3",
     likesQuantity: "200",
@@ -43,27 +37,44 @@ const posts = [
   },
   {
     id: 3,
-    image: require("../assets/images/house-photo.jpg"),
+    image: require("../../assets/images/house-photo.jpg"),
     title: "Старий будиночок у Венеції",
     commentsQuantity: "50",
     likesQuantity: "200",
     place: "Italy",
   },
+  {
+	id: 4,
+	image: require("../../assets/images/sunset-photo.jpg"),
+	title: "Захід на Чорному морі",
+	commentsQuantity: "3",
+	likesQuantity: "200",
+	place: "Ukraine",
+ },
+ {
+	id: 5,
+	image: require("../../assets/images/house-photo.jpg"),
+	title: "Старий будиночок у Венеції",
+	commentsQuantity: "50",
+	likesQuantity: "200",
+	place: "Italy",
+ },
 ];
 
 export default function ProfileScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground
-        source={require("../assets/images/bg.jpg")}
+        source={require("../../assets/images/bg.jpg")}
         style={styles.image}
       >
         <View style={styles.form}>
           <View style={styles.add}>
             <Image
-              source={require("../assets/images/user-photo.jpg")}
+              source={require("../../assets/images/user-photo.jpg")}
               style={styles.photo}
             ></Image>
+				
             <TouchableOpacity>
               <LogOutSvg style={styles.logout} />
             </TouchableOpacity>
@@ -109,18 +120,6 @@ export default function ProfileScreen() {
               keyExtractor={(item) => item.id}
             />
           </View>
-
-          {/* <View style={styles.footer}>
-            <TouchableOpacity>
-              <GridSvg />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.footerBtn}>
-              <UserSvg stroke={"#FFFFFF"} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <PlusSvg stroke={"rgba(33, 33, 33, 0.8)"} />
-            </TouchableOpacity>
-          </View> */}
         </View>
       </ImageBackground>
     </TouchableWithoutFeedback>
@@ -131,6 +130,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
+	 flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -178,7 +178,8 @@ const styles = StyleSheet.create({
   },
   postsList: {
     marginTop: 35,
-    height: 500,
+	 marginBottom: 25,
+    height: 380,
   },
   photoName: {
     fontSize: 16,

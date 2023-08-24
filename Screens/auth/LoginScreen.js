@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigation } from '@react-navigation/native';
 import {
   ImageBackground,
   StyleSheet,
@@ -11,13 +12,15 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isMailFocused, setIsMailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigation = useNavigation();
 
   const ckickHandler = () => {
     console.log(`mail: ${mail}, password: ${password}`);
@@ -26,7 +29,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground
-        source={require("../assets/images/bg.jpg")}
+        source={require("../../assets/images/bg.jpg")}
         style={styles.image}
       >
         <View style={styles.form}>
@@ -84,7 +87,7 @@ export default function LoginScreen({ navigation }) {
             }}
           >
             <Text style={styles.link}>Немає акаунту? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
               <Text style={[styles.link, { textDecorationLine: "underline" }]}>
                 Зареєструватися
               </Text>

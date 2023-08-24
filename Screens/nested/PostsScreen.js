@@ -7,26 +7,19 @@ import {
   View,
 } from "react-native";
 
-import LogOutSvg from "../assets/icons/log-out.svg";
-import GridSvg from "../assets/icons/grid.svg";
-import PlusSvg from "../assets/icons/plus.svg";
-import UserSvg from "../assets/icons/user.svg";
-
-import MessageSvg from "../assets/icons/message-icon.svg";
-import MapPinSvg from "../assets/icons/map-pin.svg";
+import MessageSvg from "../../assets/icons/message-icon.svg";
+import MapPinSvg from "../../assets/icons/map-pin.svg";
+import { useNavigation } from "@react-navigation/native";
 
 export default function PostsScreen() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Публікації</Text>
-        <LogOutSvg style={styles.logout} />
-      </View>
 
       <View style={styles.main}>
         <View style={styles.userBox}>
           <Image
-            source={require("../assets/images/user-photo.jpg")}
+            source={require("../../assets/images/user-photo.jpg")}
             style={styles.photo}
           ></Image>
           <View style={styles.userDesc}>
@@ -38,12 +31,15 @@ export default function PostsScreen() {
         <View style={styles.postsList}>
           <View style={styles.post}>
             <Image
-              source={require("../assets/images/forest-photo.jpg")}
+              source={require("../../assets/images/forest-photo.jpg")}
               style={styles.image}
             ></Image>
             <Text style={styles.photoName}>Ліс</Text>
             <View style={styles.postInfo}>
-              <MessageSvg style={styles.icon} />
+              <TouchableOpacity onPress={() => navigation.navigate("Comments")}>
+                <MessageSvg style={styles.icon} />
+              </TouchableOpacity>
+
               <Text style={styles.messagesQuantity}>0</Text>
               <View style={styles.place}>
                 <MapPinSvg style={styles.icon} />
@@ -55,18 +51,6 @@ export default function PostsScreen() {
           </View>
         </View>
       </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity>
-          <GridSvg />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.addBtn}>
-          <PlusSvg stroke={"#FFFFFF"} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <UserSvg />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -74,24 +58,7 @@ export default function PostsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    width: Dimensions.get("window").width,
-    height: 44,
-    marginTop: 40,
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.09)",
-    flexDirection: "row",
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "500",
-    color: "#212121",
-    marginLeft: "40%",
-  },
-  logout: {
-    marginLeft: "30%",
+    backgroundColor: "#fff",
   },
   main: {
     marginTop: 30,

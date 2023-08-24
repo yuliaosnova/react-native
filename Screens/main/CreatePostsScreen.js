@@ -1,5 +1,4 @@
 import {
-  Dimensions,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -11,19 +10,14 @@ import {
   View,
 } from "react-native";
 
-import ArrLeftSvg from "../assets/icons/arrow-left.svg";
-import CameraSvg from "../assets/icons/camera.svg";
-import MapPinSvg from "../assets/icons/map-pin.svg";
-import TrashSvg from "../assets/icons/trash.svg";
+import CameraSvg from "../../assets/icons/camera.svg";
+import MapPinSvg from "../../assets/icons/map-pin.svg";
+import TrashSvg from "../../assets/icons/trash.svg";
 
 export default function CreatePostsScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <ArrLeftSvg style={styles.arrow} />
-          <Text style={styles.title}>Створити публікацію</Text>
-        </View>
         <View style={styles.placeholder}>
           <TouchableOpacity style={styles.cameraCircle}>
             <CameraSvg />
@@ -66,24 +60,7 @@ export default function CreatePostsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    width: Dimensions.get("window").width,
-    height: 44,
-    marginTop: 40,
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.09)",
-    flexDirection: "row",
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "500",
-    color: "#212121",
-    marginLeft: "20%",
-  },
-  arrow: {
-    marginLeft: 15,
+    backgroundColor: "#fff",
   },
   placeholder: {
     width: 343,
