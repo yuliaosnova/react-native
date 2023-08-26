@@ -49,8 +49,6 @@ const Home = () => {
 				),	
 				tabBarStyle: {display: 'none'},
 		}} name="Comments"  component={CommentsScreen}/>
-
-
 		  <NestedStack.Screen options={{	
 		  headerShown: false,
 		  tabBarStyle: { display: "none" },

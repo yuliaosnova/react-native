@@ -6,6 +6,18 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useRoute } from "./router";
 
 export default function App() {
+  // const [isReady, setIsReady] = useState(false);
+
+  // if (!isReady) {
+  // 	return (
+  // 		<AppLoading startAsync={loadApplication}
+  // 		onFinish={() => setIsReady(true)}
+  // 		onError={console.warn}
+  // 		/>
+  // 	);
+  // }
+
+  // return <NavigationContainer>{routing}</NavigationContainer>
 
   const routing = useRoute({});
 

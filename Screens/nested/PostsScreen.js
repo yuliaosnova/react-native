@@ -41,12 +41,15 @@ export default function PostsScreen() {
               </TouchableOpacity>
 
               <Text style={styles.messagesQuantity}>0</Text>
-              <View style={styles.place}>
+              {/* <View style={styles.place}> */}
+				  <TouchableOpacity style={styles.place} onPress={() => navigation.navigate("Map")}>
                 <MapPinSvg style={styles.icon} />
-                <Text style={styles.region}>
+					 <Text style={styles.region}>
                   Ivano-Frankivs'k Region, Ukraine
                 </Text>
-              </View>
+					 </TouchableOpacity>
+                
+              {/* </View> */}
             </View>
           </View>
         </View>

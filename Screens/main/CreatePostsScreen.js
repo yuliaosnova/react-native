@@ -8,22 +8,94 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  Image,
 } from "react-native";
+
+import { Camera } from "expo-camera";
+import * as Location from "expo-location";
 
 import CameraSvg from "../../assets/icons/camera.svg";
 import MapPinSvg from "../../assets/icons/map-pin.svg";
 import TrashSvg from "../../assets/icons/trash.svg";
+import { useEffect, useState } from "react";
 
 export default function CreatePostsScreen() {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [photo, setPhoto] = useState();
+
+  const [cameraRef, setCameraRef] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
+  const takePic = async () => {
+    if (photo) {
+      setPhoto(null);
+    }
+
+    if (cameraRef) {
+      let options = {
+        quality: 1,
+        base64: true,
+        exif: false,
+      };
+
+      let newPhoto = await cameraRef.takePictureAsync(options);
+      setPhoto(newPhoto);
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <View style={styles.placeholder}>
-          <TouchableOpacity style={styles.cameraCircle}>
-            <CameraSvg />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.text}>Завантажте фото</Text>
+        {photo ? (
+          <View>
+            <Image
+              style={styles.placeholder}
+              source={{ uri: "data:image/jpg;base64," + photo.base64 }}
+            />
+            <TouchableOpacity style={styles.button} onPress={takePic}>
+              <View style={styles.cameraCircle}>
+                <CameraSvg />
+              </View>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <Camera style={styles.camera} type={type} ref={setCameraRef}>
+              <View style={styles.photoView}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setType(
+                      type === Camera.Constants.Type.back
+                        ? Camera.Constants.Type.front
+                        : Camera.Constants.Type.back
+                    );
+                  }}
+                ></TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={takePic}>
+                  <View style={styles.cameraCircle}>
+                    <CameraSvg />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </Camera>
+            <Text style={styles.text}>Завантажте фото</Text>
+          </>
+        )}
+
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
         >
@@ -148,5 +220,41 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginLeft: "auto",
     marginRight: "auto",
+  },
+
+  camera: { flex: 1 },
+  photoView: {
+    flex: 1,
+    backgroundColor: "transparent",
+    justifyContent: "center",
+  },
+
+  flipContainer: {
+    flex: 0.1,
+    alignSelf: "flex-end",
+  },
+
+  button: { alignSelf: "center" },
+
+  takePhotoOut: {
+    borderWidth: 2,
+    borderColor: "white",
+    height: 50,
+    width: 50,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+  },
+
+  takePhotoInner: {
+    borderWidth: 2,
+    borderColor: "white",
+    height: 40,
+    width: 40,
+    backgroundColor: "white",
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
