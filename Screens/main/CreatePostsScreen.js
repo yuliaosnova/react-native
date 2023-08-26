@@ -23,7 +23,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function CreatePostsScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const [photo, setPhoto] = useState();
+  const [photo, setPhoto] = useState(null);
   const [photoName, setPhotoName] = useState("");
   const [place, setPlace] = useState("");
   const [location, setLocation] = useState("");
@@ -60,6 +60,12 @@ export default function CreatePostsScreen() {
       setPhoto(newPhoto);
     }
   };
+
+  const deletePost = () => {
+	setPhoto(null);
+	setPhotoName("");
+	setPlace("");
+  }
 
   const ckickHandler = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -158,7 +164,7 @@ export default function CreatePostsScreen() {
               Опублікувати
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.trashBtn}>
+          <TouchableOpacity style={styles.trashBtn} onPress={deletePost}>
             <TrashSvg />
           </TouchableOpacity>
         </KeyboardAvoidingView>
