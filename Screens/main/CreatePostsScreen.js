@@ -18,13 +18,17 @@ import CameraSvg from "../../assets/icons/camera.svg";
 import MapPinSvg from "../../assets/icons/map-pin.svg";
 import TrashSvg from "../../assets/icons/trash.svg";
 import { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CreatePostsScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState();
-
+  const [photoName, setPhotoName] = useState("");
+  const [place, setPlace] = useState("");
+  const [location, setLocation] = useState("");
   const [cameraRef, setCameraRef] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -57,6 +61,23 @@ export default function CreatePostsScreen() {
     }
   };
 
+  const ckickHandler = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    const coords = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    };
+    //  console.log(coords)
+    setLocation(coords);
+    console.log(`Назва: ${photoName}, Місцевість: ${place}`);
+	 navigation.navigate('Home', { screen: 'PostsScreen' });
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -66,11 +87,20 @@ export default function CreatePostsScreen() {
               style={styles.placeholder}
               source={{ uri: "data:image/jpg;base64," + photo.base64 }}
             />
-            <TouchableOpacity style={styles.button} onPress={takePic}>
-              <View style={styles.cameraCircle}>
+            <TouchableOpacity
+              style={styles.buttonTransparent}
+              onPress={takePic}
+            >
+              <View
+                style={[
+                  styles.cameraCircle,
+                  { backgroundColor: "rgba(255, 255, 255, 0.3)" },
+                ]}
+              >
                 <CameraSvg />
               </View>
             </TouchableOpacity>
+            <Text style={styles.textChangePhoto}>Редагувати фото</Text>
           </View>
         ) : (
           <>
@@ -102,28 +132,36 @@ export default function CreatePostsScreen() {
           <View style={styles.description}>
             <TextInput
               style={styles.input}
+              value={photoName}
               placeholder="Назва..."
               placeholderTextColor="#BDBDBD"
+              onChangeText={setPhotoName}
             ></TextInput>
+
             <TextInput
               style={[styles.input, { paddingLeft: 30 }]}
+              value={place}
               placeholder="Місцевість..."
               placeholderTextColor="#BDBDBD"
+              onChangeText={setPlace}
             ></TextInput>
+
             <MapPinSvg style={styles.mapPin} />
           </View>
-        </KeyboardAvoidingView>
 
-        <TouchableOpacity
-          style={styles.publishBtn}
-          accessibilityLabel="Publish button"
-          // onPress={ckickHandler}
-        >
-          <Text style={styles.btnText}>Опублікувати</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.trashBtn}>
-          <TrashSvg />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.publishBtn, photo && { backgroundColor: "#FF6C00" }]}
+            accessibilityLabel="Publish button"
+            onPress={ckickHandler}
+          >
+            <Text style={[styles.btnText, photo && { color: "#FFFFFF" }]}>
+              Опублікувати
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.trashBtn}>
+            <TrashSvg />
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -150,7 +188,7 @@ const styles = StyleSheet.create({
   cameraCircle: {
     width: 60,
     height: 60,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 1)",
     borderRadius: 100,
     alignItems: "center",
     justifyContent: "center",
@@ -158,6 +196,13 @@ const styles = StyleSheet.create({
   text: {
     marginTop: 8,
     marginLeft: 35,
+    fontSize: 16,
+    color: "#BDBDBD",
+    lineHeight: 19,
+  },
+  textChangePhoto: {
+    marginTop: -50,
+    marginLeft: 30,
     fontSize: 16,
     color: "#BDBDBD",
     lineHeight: 19,
@@ -235,6 +280,10 @@ const styles = StyleSheet.create({
   },
 
   button: { alignSelf: "center" },
+  buttonTransparent: {
+    top: -150,
+    left: 170,
+  },
 
   takePhotoOut: {
     borderWidth: 2,
