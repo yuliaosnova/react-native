@@ -14,6 +14,14 @@ import {
 } from "react-native";
 
 import PlusSvg from "../../assets/icons/plus.svg";
+import { useDispatch } from "react-redux";
+import { registerDB } from "../../redux/auth/authOperations";
+
+const initialState = {
+	name: "",
+	mail: "",
+	password: "",
+}
 
 export default function RegistrationScreen() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,14 +29,19 @@ export default function RegistrationScreen() {
   const [isMailFocused, setIsMailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
-  const [name, setName] = useState("");
-  const [mail, setMail] = useState("");
-  const [password, setPassword] = useState("");
+  const [state, setState] = useState(initialState);
+
+//   const [name, setName] = useState("");
+//   const [mail, setMail] = useState("");
+//   const [password, setPassword] = useState("");
 
   const navigation = useNavigation();
 
-  const ckickHandler = () => {
-	console.log(`name: ${name}, mail: ${mail}, password: ${password}`);
+  const dispatch = useDispatch();
+
+  const handleSubmit = () => {
+	console.log("state: ", state);
+	dispatch(registerDB(state)); 
  };
 
   return (
@@ -40,7 +53,7 @@ export default function RegistrationScreen() {
         <View style={styles.form}>
           <View style={styles.add}>
             <TouchableOpacity style={styles.addBtn}>
-              <PlusSvg />
+              {/* <PlusSvg /> */}
             </TouchableOpacity>
           </View>
           <Text style={styles.title}>Реєстрація</Text>
@@ -51,13 +64,14 @@ export default function RegistrationScreen() {
                 isNameFocused && { borderColor: "#FF6C00" },
               ]}
               placeholder="Логін"
-              value={name}
+              value={state.name}
               placeholderTextColor="#BDBDBD"
               onBlur={() => setIsNameFocused(false)}
               onFocus={() => setIsNameFocused(true)}
-              onChangeText={setName}
+              onChangeText={(value) => setState((prevState) => ({...prevState, name: value}))}
             ></TextInput>
           </View>
+
           <View>
             <TextInput
               style={[
@@ -65,14 +79,15 @@ export default function RegistrationScreen() {
                 isMailFocused && { borderColor: "#FF6C00" },
               ]}
               placeholder="Адреса електронної пошти"
-              value={mail}
+              value={state.mail}
               placeholderTextColor="#BDBDBD"
               autoComplete="email"
               onBlur={() => setIsMailFocused(false)}
               onFocus={() => setIsMailFocused(true)}
-              onChangeText={setMail}
+              onChangeText={(value) => setState((prevState) => ({...prevState, mail: value}))}
             ></TextInput>
           </View>
+
           <View>
             <KeyboardAvoidingView
               behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -84,12 +99,12 @@ export default function RegistrationScreen() {
                 ]}
                 secureTextEntry={showPassword ? false : true}
                 placeholder="Пароль"
-                value={password}
+                value={state.password}
                 placeholderTextColor="#BDBDBD"
                 autoComplete="password"
                 onBlur={() => setIsPasswordFocused(false)}
                 onFocus={() => setIsPasswordFocused(true)}
-                onChangeText={setPassword}
+                onChangeText={(value) => setState((prevState) => ({...prevState, password: value}))}
               ></TextInput>
             </KeyboardAvoidingView>
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -98,10 +113,11 @@ export default function RegistrationScreen() {
               </Text>
             </TouchableOpacity>
           </View>
+
           <TouchableOpacity
             style={styles.registerBtn}
             accessibilityLabel="Register button"
-				onPress={ckickHandler}
+				onPress={handleSubmit}
           >
             <Text style={styles.btnText}>Зареєструватися</Text>
           </TouchableOpacity>

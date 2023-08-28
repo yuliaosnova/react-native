@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 
+
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isMailFocused, setIsMailFocused] = useState(false);
@@ -23,7 +24,7 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   const ckickHandler = () => {
-    console.log(`mail: ${mail}, password: ${password}`);
+   //  console.log(`mail: ${mail}, password: ${password}`);
   };
 
   return (
