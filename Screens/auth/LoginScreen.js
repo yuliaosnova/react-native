@@ -11,20 +11,32 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { loginDB } from "../../redux/auth/authOperations";
+
+const initialState = {
+	mail: "",
+	password: "",
+}
 
 
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isMailFocused, setIsMailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [state, setState] = useState(initialState);
 
-  const [mail, setMail] = useState("");
-  const [password, setPassword] = useState("");
+//   const [mail, setMail] = useState("");
+//   const [password, setPassword] = useState("");
 
   const navigation = useNavigation();
 
-  const ckickHandler = () => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = () => {
    //  console.log(`mail: ${mail}, password: ${password}`);
+	console.log("state: ", state);
+	dispatch(loginDB(state)); 
   };
 
   return (
@@ -42,11 +54,12 @@ export default function LoginScreen() {
                 isMailFocused && { borderColor: "#FF6C00" },
               ]}
               placeholder="Адреса електронної пошти"
+				  value={state.mail}
               placeholderTextColor="#BDBDBD"
               autoComplete="email"
               onBlur={() => setIsMailFocused(false)}
               onFocus={() => setIsMailFocused(true)}
-              onChangeText={setMail}
+              onChangeText={(value) => setState((prevState) => ({...prevState, mail: value}))}
             ></TextInput>
           </View>
           <View>
@@ -60,11 +73,12 @@ export default function LoginScreen() {
                 ]}
                 secureTextEntry={showPassword ? false : true}
                 placeholder="Пароль"
+					 value={state.password}
                 placeholderTextColor="#BDBDBD"
                 autoComplete="password"
                 onBlur={() => setIsPasswordFocused(false)}
                 onFocus={() => setIsPasswordFocused(true)}
-                onChangeText={setPassword}
+                onChangeText={(value) => setState((prevState) => ({...prevState, password: value}))}
               ></TextInput>
             </KeyboardAvoidingView>
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -76,7 +90,7 @@ export default function LoginScreen() {
           <TouchableOpacity
             style={styles.loginBtn}
             accessibilityLabel="Login button"
-            onPress={ckickHandler}
+            onPress={handleSubmit}
           >
             <Text style={styles.btnText}>Увійти</Text>
           </TouchableOpacity>

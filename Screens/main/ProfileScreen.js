@@ -16,7 +16,12 @@ import LogOutSvg from "../../assets/icons/log-out.svg";
 import MessageSvg from "../../assets/icons/message-icon.svg";
 import LikeSvg from "../../assets/icons/thumbs-up.svg";
 import MapPinSvg from "../../assets/icons/map-pin.svg";
+import { authSignOutUser } from "../../redux/auth/authOperations";
 
+import { Feather } from "@expo/vector-icons";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/config";
+import { useDispatch } from "react-redux";
 
 const posts = [
   {
@@ -44,24 +49,30 @@ const posts = [
     place: "Italy",
   },
   {
-	id: 4,
-	image: require("../../assets/images/sunset-photo.jpg"),
-	title: "Захід на Чорному морі",
-	commentsQuantity: "3",
-	likesQuantity: "200",
-	place: "Ukraine",
- },
- {
-	id: 5,
-	image: require("../../assets/images/house-photo.jpg"),
-	title: "Старий будиночок у Венеції",
-	commentsQuantity: "50",
-	likesQuantity: "200",
-	place: "Italy",
- },
+    id: 4,
+    image: require("../../assets/images/sunset-photo.jpg"),
+    title: "Захід на Чорному морі",
+    commentsQuantity: "3",
+    likesQuantity: "200",
+    place: "Ukraine",
+  },
+  {
+    id: 5,
+    image: require("../../assets/images/house-photo.jpg"),
+    title: "Старий будиночок у Венеції",
+    commentsQuantity: "50",
+    likesQuantity: "200",
+    place: "Italy",
+  },
 ];
 
 export default function ProfileScreen() {
+  const dispatch = useDispatch();
+
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground
@@ -74,13 +85,19 @@ export default function ProfileScreen() {
               source={require("../../assets/images/user-photo.jpg")}
               style={styles.photo}
             ></Image>
-				
-            <TouchableOpacity>
-              <LogOutSvg style={styles.logout} />
+
+            <TouchableOpacity onPress={signOut}>
+              <Feather
+                style={styles.logout}
+                name="log-out"
+                size={24}
+                color="green"
+              />
+              {/* <LogOutSvg style={styles.logout} /> */}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.addBtn}>
-              <CrossSvg />
+              {/* <CrossSvg /> */}
             </TouchableOpacity>
           </View>
           <Text style={styles.userName}>Natali Romanova</Text>
@@ -93,16 +110,16 @@ export default function ProfileScreen() {
                   <Image source={item.image} style={styles.picture}></Image>
                   <Text style={styles.photoName}>{item.title}</Text>
                   <View style={styles.postInfo}>
-                    <MessageSvg style={styles.icon} fill={"#FF6C00"} />
+                    {/* <MessageSvg style={styles.icon} fill={"#FF6C00"} /> */}
                     <Text style={styles.messagesQuantity}>
                       {item.commentsQuantity}
                     </Text>
-                    <LikeSvg style={styles.icon} stroke={"#FF6C00"} />
+                    {/* <LikeSvg style={styles.icon} stroke={"#FF6C00"} /> */}
                     <Text style={styles.likesQuantity}>
                       {item.likesQuantity}
                     </Text>
                     <View style={styles.place}>
-                      <MapPinSvg style={styles.icon} />
+                      {/* <MapPinSvg style={styles.icon} /> */}
                       <Text style={styles.region}>{item.place}</Text>
                     </View>
                   </View>
@@ -130,7 +147,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
-	 flex: 1,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -178,7 +195,7 @@ const styles = StyleSheet.create({
   },
   postsList: {
     marginTop: 35,
-	 marginBottom: 25,
+    marginBottom: 25,
     height: 380,
   },
   photoName: {

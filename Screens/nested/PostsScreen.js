@@ -7,8 +7,8 @@ import {
   View,
 } from "react-native";
 
-import MessageSvg from "../../assets/icons/message-icon.svg";
-import MapPinSvg from "../../assets/icons/map-pin.svg";
+// import MessageSvg from "../../assets/icons/message-icon.svg";
+// import MapPinSvg from "../../assets/icons/map-pin.svg";
 import { useNavigation } from "@react-navigation/native";
 
 export default function PostsScreen() {
@@ -37,13 +37,13 @@ export default function PostsScreen() {
             <Text style={styles.photoName}>Ліс</Text>
             <View style={styles.postInfo}>
               <TouchableOpacity onPress={() => navigation.navigate("Comments")}>
-                <MessageSvg style={styles.icon} />
+                {/* <MessageSvg style={styles.icon} /> */}
               </TouchableOpacity>
 
               <Text style={styles.messagesQuantity}>0</Text>
               {/* <View style={styles.place}> */}
 				  <TouchableOpacity style={styles.place} onPress={() => navigation.navigate("Map")}>
-                <MapPinSvg style={styles.icon} />
+                {/* <MapPinSvg style={styles.icon} /> */}
 					 <Text style={styles.region}>
                   Ivano-Frankivs'k Region, Ukraine
                 </Text>
