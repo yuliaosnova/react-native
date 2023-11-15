@@ -11,17 +11,19 @@ import {
   Dimensions,
 } from "react-native";
 
-import CrossSvg from "../../assets/icons/cross-icon.svg";
-import LogOutSvg from "../../assets/icons/log-out.svg";
-import MessageSvg from "../../assets/icons/message-icon.svg";
-import LikeSvg from "../../assets/icons/thumbs-up.svg";
-import MapPinSvg from "../../assets/icons/map-pin.svg";
+// import CrossSvg from "../../assets/icons/cross-icon.svg";
+// import LogOutSvg from "../../assets/icons/log-out.svg";
+// import MessageSvg from "../../assets/icons/message-icon.svg";
+// import LikeSvg from "../../assets/icons/thumbs-up.svg";
+// import MapPinSvg from "../../assets/icons/map-pin.svg";
 import { authSignOutUser } from "../../redux/auth/authOperations";
 
 import { Feather } from "@expo/vector-icons";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { useDispatch } from "react-redux";
+
+// import styles from "./profileScreen.style";
 
 const posts = [
   {
@@ -144,104 +146,104 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  image: {
-    width: "100%",
-    height: "100%",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  form: {
-    width: "100%",
-    minHeight: 600,
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    position: "absolute",
-    bottom: 0,
-    alignItems: "center",
-  },
-  add: {
-    width: 120,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    position: "absolute",
-    top: -60,
-    zIndex: 2,
-  },
-  photo: {
-    borderRadius: 16,
-  },
-  addBtn: {
-    width: 25,
-    height: 25,
-    borderWidth: 1,
-    borderColor: "rgba(232, 232, 232, 1)",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 1)",
-    borderRadius: 100,
-    top: -40,
-    left: 107,
-  },
-  logout: { position: "absolute", top: -40, left: 215 },
-  userName: {
-    fontSize: 30,
-    fontWeight: "500",
-    color: "#212121",
-    marginTop: 80,
-    marginBottom: 18,
-  },
-  postsList: {
-    marginTop: 35,
-    marginBottom: 25,
-    height: 380,
-  },
-  photoName: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginTop: 4,
-    marginBottom: 6,
-  },
-  postInfo: {
-    flexDirection: "row",
-  },
-  icon: {
-    marginRight: 5,
-    width: 24,
-    height: 24,
-  },
-  messagesQuantity: {
-    fontSize: 16,
-    marginRight: 15,
-  },
-  place: {
-    flexDirection: "row",
-    marginLeft: "auto",
-  },
-  region: {
-    fontSize: 16,
-    color: "#212121",
-    textDecorationLine: "underline",
-  },
-  footer: {
-    width: Dimensions.get("window").width,
-    height: 73,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 30,
-    borderTopWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.09)",
-    flexDirection: "row",
-    marginTop: "auto",
-  },
-  footerBtn: {
-    width: 70,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FF6C00",
-    borderRadius: 100,
-  },
-});
+	image: {
+	  width: "100%",
+	  height: "100%",
+	  flex: 1,
+	  justifyContent: "center",
+	  alignItems: "center",
+	},
+	form: {
+	  width: "100%",
+	  minHeight: 600,
+	  backgroundColor: "#FFFFFF",
+	  borderTopLeftRadius: 25,
+	  borderTopRightRadius: 25,
+	  position: "absolute",
+	  bottom: 0,
+	  alignItems: "center",
+	},
+	add: {
+	  width: 120,
+	  height: 120,
+	  backgroundColor: "#F6F6F6",
+	  borderRadius: 16,
+	  position: "absolute",
+	  top: -60,
+	  zIndex: 2,
+	},
+	photo: {
+	  borderRadius: 16,
+	},
+	addBtn: {
+	  width: 25,
+	  height: 25,
+	  borderWidth: 1,
+	  borderColor: "rgba(232, 232, 232, 1)",
+	  alignItems: "center",
+	  justifyContent: "center",
+	  backgroundColor: "rgba(255, 255, 255, 1)",
+	  borderRadius: 100,
+	  top: -40,
+	  left: 107,
+	},
+	logout: { position: "absolute", top: -40, left: 215 },
+	userName: {
+	  fontSize: 30,
+	  fontWeight: "500",
+	  color: "#212121",
+	  marginTop: 80,
+	  marginBottom: 18,
+	},
+	postsList: {
+	  marginTop: 35,
+	  marginBottom: 25,
+	  height: 380,
+	},
+	photoName: {
+	  fontSize: 16,
+	  fontWeight: "500",
+	  marginTop: 4,
+	  marginBottom: 6,
+	},
+	postInfo: {
+	  flexDirection: "row",
+	},
+	icon: {
+	  marginRight: 5,
+	  width: 24,
+	  height: 24,
+	},
+	messagesQuantity: {
+	  fontSize: 16,
+	  marginRight: 15,
+	},
+	place: {
+	  flexDirection: "row",
+	  marginLeft: "auto",
+	},
+	region: {
+	  fontSize: 16,
+	  color: "#212121",
+	  textDecorationLine: "underline",
+	},
+	footer: {
+	  width: Dimensions.get("window").width,
+	  height: 73,
+	  alignItems: "center",
+	  justifyContent: "center",
+	  gap: 30,
+	  borderTopWidth: 1,
+	  borderColor: "rgba(0, 0, 0, 0.09)",
+	  flexDirection: "row",
+	  marginTop: "auto",
+	},
+	footerBtn: {
+	  width: 70,
+	  height: 40,
+	  alignItems: "center",
+	  justifyContent: "center",
+	  backgroundColor: "#FF6C00",
+	  borderRadius: 100,
+	},
+ });

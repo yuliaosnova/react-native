@@ -6,11 +6,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import RegistrationScreen from "./Screens/auth/RegistrationScreen";
 import LoginScreen from "./Screens/auth/LoginScreen";
-// import CreatePostsScreen from "./Screens/main/CreatePostsScreen";
-import CreatePostsScreen from "./Screens/main/createPostsScreen/CreatePostsScreen";
+import CreatePostsScreen from "./Screens/main/CreatePostsScreen";
 import ProfileScreen from "./Screens/main/ProfileScreen";
 import Home from "./Screens/main/Home";
-//icons import
 import { Ionicons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons';
 import { TouchableOpacity } from "react-native";
