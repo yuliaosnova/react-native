@@ -1,8 +1,6 @@
 import {
-  Dimensions,
   FlatList,
   Image,
-  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -11,8 +9,7 @@ import {
   View,
 } from "react-native";
 
-import ArrLeftSvg from "../../assets/icons/arrow-left.svg";
-import ArrAppSvg from "../../assets/icons/arrow-up.svg";
+import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 
 const comments = [
@@ -42,7 +39,7 @@ const comments = [
   },
 ];
 
-export default function CommentsScreen() {
+const CommentsScreen = () => {
   const [comment, setComment] = useState("");
 
   let currentUserId = 1;
@@ -52,20 +49,19 @@ export default function CommentsScreen() {
   }
 
   const onBtnClick = (message) => {
-	console.log(message)
-   //  setComment(message);
+    console.log(message);
+    setComment(message);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.header}>
-        <ArrLeftSvg style={styles.arrow} />
-        <Text style={styles.title}>Коментарі</Text>
-      </View> */}
 
       <View style={styles.main}>
         <View style={styles.placeholder}>
-          <Image source={require("../../assets/images/sunset-photo.jpg")}></Image>
+          <Image
+            source={require("../../assets/images/sunset-photo.jpg")}
+            style={styles.image}
+          ></Image>
         </View>
 
         <View style={styles.comentsList}>
@@ -91,7 +87,6 @@ export default function CommentsScreen() {
               </View>
             )}
             keyExtractor={(item) => item.id}
-			
           />
         </View>
       </View>
@@ -100,18 +95,18 @@ export default function CommentsScreen() {
         style={[styles.input]}
         placeholder="Коментувати..."
         placeholderTextColor="#BDBDBD"
-		  onChangeText={setComment}
+        onChangeText={setComment}
       ></TextInput>
       <TouchableOpacity style={styles.sendBtn} onPress={onBtnClick}>
-        <ArrAppSvg />
+        <AntDesign name="arrowup" size={20} color="white" />
       </TouchableOpacity>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
+    flex: 1,
     backgroundColor: "#fff",
   },
   main: {
@@ -119,18 +114,18 @@ const styles = StyleSheet.create({
     marginRight: "auto",
   },
   placeholder: {
-    width: 343,
-    height: 240,
     backgroundColor: "#F6F6F6",
     borderWidth: 1,
     borderRadius: 8,
     borderColor: "#E8E8E8",
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 30,
-    alignItems: "center",
-    justifyContent: "center",
   },
-  comentsList: {maxHeight: 330,},
+  image: {
+    width: 343,
+    height: 200,
+  },
+  comentsList: { maxHeight: 240 },
   coment: { flexDirection: "row", gap: 10, marginBottom: 20 },
   comentBlock: {
     width: 299,
@@ -168,7 +163,7 @@ const styles = StyleSheet.create({
     color: "#212121",
     paddingLeft: 20,
     marginTop: "auto",
-    marginBottom: 20,
+    marginBottom: 10,
     marginLeft: "auto",
     marginRight: "auto",
   },
@@ -180,7 +175,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     borderRadius: 100,
     position: "absolute",
-    bottom: 28,
-    right: 34,
+    bottom: 18,
+    right: 45,
   },
 });
+
+export default CommentsScreen;

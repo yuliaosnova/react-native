@@ -17,47 +17,49 @@ import * as Location from "expo-location";
 //  import CameraSvg from "../../assets/icons/camera.svg";
 //  import MapPinSvg from "../../assets/icons/map-pin.svg";
 //  import TrashSvg from "../../assets/icons/trash.svg";
+import { Feather, AntDesign, SimpleLineIcons } from "@expo/vector-icons";
+
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc } from "firebase/firestore";
 import { db, storage } from "../../firebase/config";
 import { uriToBlob } from "../../helpers/uriToBlob";
 import { useSelector } from "react-redux";
 
-
 export default function CreatePostsScreen() {
-//   const [hasPermission, setHasPermission] = useState(null);
+  //   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState(null);
-  const [photoURL, setPhotoURL] = useState("");
+  const [photoURL, setPhotoURL] = useState(null);
   const [photoName, setPhotoName] = useState("");
   const [place, setPlace] = useState("");
   const [location, setLocation] = useState("");
   const navigation = useNavigation();
   let cameraRef = useRef();
 
-  const { userId, nickName } = useSelector((state) => state.auth)
+  const { userId, nickName } = useSelector((state) => state.auth);
 
   useEffect(() => {
-	(async () => {
-	  let { status } = await Location.requestForegroundPermissionsAsync();
-	//   if (status !== 'granted') {
-	// 	 setErrorMsg('Permission to access location was denied');
-	// 	 return;
-	//   }
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      //   if (status !== 'granted') {
+      // 	 setErrorMsg('Permission to access location was denied');
+      // 	 return;
+      //   }
 
-	  let location = await Location.getCurrentPositionAsync({});
-	  setLocation(location);
-	})();
- }, []);
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
 
-//   if (hasPermission === null) {
-//     return <View />;
-//   }
-//   if (hasPermission === false) {
-//     return <Text>No access to camera</Text>;
-//   }
+  //   if (hasPermission === null) {
+  //     return <View />;
+  //   }
+  //   if (hasPermission === false) {
+  //     return <Text>No access to camera</Text>;
+  //   }
 
   const takePhoto = async () => {
     if (photo) {
@@ -83,36 +85,38 @@ export default function CreatePostsScreen() {
   };
 
   const publish = async () => {
-	console.log("PHOTO NAME", photoName)
-	console.log("LOCATON", location)
-	await savePhotoToStorage(photo);
+    console.log("PHOTO NAME", photoName);
+    console.log("LOCATON", location);
+    await savePhotoToStorage(photo);
 
-	const docRef = await addDoc(collection(db, "posts"), {
-		photo: photoURL,
-		photoName,
-		location: location.coords,
-		userId,
-		userName: nickName
-	 });
+	 if(!photoURL) return;
 
-	 console.log("Document written with ID: ", docRef.id);
-   //  let { status } = await Location.requestForegroundPermissionsAsync();
-   //  if (status !== "granted") {
-   //    console.log("Permission to access location was denied");
-   //  }
+    const docRef = await addDoc(collection(db, "posts"), {
+      photo: photoURL,
+      photoName,
+      location: location.coords,
+		place,
+      userId,
+      userName: nickName,
+		date: new Date().toLocaleString()
+    });
 
-   //  let location = await Location.getCurrentPositionAsync({});
-   //  const coords = {
-   //    latitude: location.coords.latitude,
-   //    longitude: location.coords.longitude,
-   //  };
-   //  //  console.log(coords)
-   //  setLocation(coords);
+    console.log("Document written with ID: ", docRef.id);
+    //  let { status } = await Location.requestForegroundPermissionsAsync();
+    //  if (status !== "granted") {
+    //    console.log("Permission to access location was denied");
+    //  }
+
+    //  let location = await Location.getCurrentPositionAsync({});
+    //  const coords = {
+    //    latitude: location.coords.latitude,
+    //    longitude: location.coords.longitude,
+    //  };
+    //  //  console.log(coords)
+    //  setLocation(coords);
     //  console.log(`Назва: ${photoName}, Місцевість: ${place}`);
-	 deletePost()
+    deletePost();
     navigation.navigate("Home", { screen: "PostsScreen" });
-
-    
   };
 
   async function savePhotoToStorage(photo) {
@@ -127,7 +131,7 @@ export default function CreatePostsScreen() {
     uploadBytes(imagesRef, blob).then((snapshot) => {
       getDownloadURL(snapshot.ref).then(async (url) => {
         console.log("URL", url);
-		  setPhotoURL(url)
+        setPhotoURL(url);
       });
     });
   }
@@ -190,13 +194,25 @@ export default function CreatePostsScreen() {
               onChangeText={setPhotoName}
             ></TextInput>
 
-            {/* <TextInput
+            <TextInput
               style={[styles.input, { paddingLeft: 30 }]}
               value={place}
               placeholder="Місцевість..."
               placeholderTextColor="#BDBDBD"
               onChangeText={setPlace}
-            ></TextInput> */}
+            ></TextInput>
+
+<TouchableOpacity
+                  style={styles.place}
+                  onPress={() => navigation.navigate("Map")}
+                >
+            <SimpleLineIcons
+              name="location-pin"
+              size={20}
+              color="gray"
+              style={styles.mapPin}
+            />
+				 </TouchableOpacity>
 
             {/* <MapPinSvg style={styles.mapPin} /> */}
           </View>
@@ -212,6 +228,11 @@ export default function CreatePostsScreen() {
           </TouchableOpacity>
           <TouchableOpacity style={styles.trashBtn} onPress={deletePost}>
             {/* <TrashSvg /> */}
+            <MaterialCommunityIcons
+              name="trash-can-outline"
+              size={24}
+              color="gray"
+            />
           </TouchableOpacity>
         </KeyboardAvoidingView>
       </View>
@@ -220,142 +241,143 @@ export default function CreatePostsScreen() {
 }
 
 const styles = StyleSheet.create({
-	container: {
-	  flex: 1,
-	  backgroundColor: "#fff",
-	},
-	placeholder: {
-	  width: 343,
-	  height: 240,
-	  backgroundColor: "#F6F6F6",
-	  borderWidth: 1,
-	  borderRadius: 8,
-	  borderColor: "#E8E8E8",
-	  marginTop: 30,
-	  marginLeft: "auto",
-	  marginRight: "auto",
-	  alignItems: "center",
-	  justifyContent: "center",
-	},
-	cameraCircle: {
-	  width: 60,
-	  height: 60,
-	  backgroundColor: "rgba(255, 255, 255, 1)",
-	  borderRadius: 100,
-	  alignItems: "center",
-	  justifyContent: "center",
-	},
-	text: {
-	  marginTop: 8,
-	  marginLeft: 35,
-	  fontSize: 16,
-	  color: "#BDBDBD",
-	  lineHeight: 19,
-	},
-	textChangePhoto: {
-	  marginTop: -50,
-	  marginLeft: 30,
-	  fontSize: 16,
-	  color: "#BDBDBD",
-	  lineHeight: 19,
-	},
-	description: {
-	  marginLeft: "auto",
-	  marginRight: "auto",
-	},
-	input: {
-	  borderBottomWidth: 1,
-	  borderColor: "#E8E8E8",
-	  fontSize: 16,
-	  height: 50,
-	  width: 343,
-	  color: "#212121",
-	  marginTop: 20,
-	},
-	mapPin: {
-	  top: -36,
-	},
-	publishBtn: {
-	  width: 343,
-	  height: 51,
-	  backgroundColor: "#F6F6F6",
-	  borderRadius: 100,
-	  marginBottom: 16,
-	  alignItems: "center",
-	  justifyContent: "center",
-	  marginTop: 3,
-	  marginLeft: "auto",
-	  marginRight: "auto",
-	  marginBottom: 50,
-	},
-	btnText: {
-	  color: "#BDBDBD",
-	  fontSize: 16,
-	},
-	publishBtnActive: {
-	  marginTop: 3,
-	  width: 343,
-	  height: 51,
-	  backgroundColor: "#F6F6F6",
-	  borderRadius: 100,
-	  marginBottom: 16,
-	  alignItems: "center",
-	  justifyContent: "center",
-	  marginLeft: "auto",
-	  marginRight: "auto",
-	},
-	btnTextActive: {
-	  color: "#FF6C00",
-	  fontSize: 16,
-	},
-	trashBtn: {
-	  width: 70,
-	  height: 40,
-	  alignItems: "center",
-	  justifyContent: "center",
-	  backgroundColor: "#F6F6F6",
-	  borderRadius: 100,
-	  marginLeft: "auto",
-	  marginRight: "auto",
-	},
- 
-	camera: { flex: 1 },
-	photoView: {
-	  flex: 1,
-	  backgroundColor: "transparent",
-	  justifyContent: "center",
-	},
- 
-	flipContainer: {
-	  flex: 0.1,
-	  alignSelf: "flex-end",
-	},
- 
-	button: { alignSelf: "center" },
-	buttonTransparent: {
-	  top: -150,
-	  left: 170,
-	},
- 
-	takePhotoOut: {
-	  borderWidth: 2,
-	  borderColor: "white",
-	  height: 50,
-	  width: 50,
-	  display: "flex",
-	  justifyContent: "center",
-	  alignItems: "center",
-	  borderRadius: 50,
-	},
- 
-	takePhotoInner: {
-	  borderWidth: 2,
-	  borderColor: "white",
-	  height: 40,
-	  width: 40,
-	  backgroundColor: "white",
-	  borderRadius: 50,
-	  alignItems: "center",
-	  justifyContent: "center",
-	},
- });
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  placeholder: {
+    width: 343,
+    height: 240,
+    backgroundColor: "#F6F6F6",
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: "#E8E8E8",
+    marginTop: 30,
+    marginLeft: "auto",
+    marginRight: "auto",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cameraCircle: {
+    width: 60,
+    height: 60,
+    backgroundColor: "rgba(255, 255, 255, 1)",
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    marginTop: 8,
+    marginLeft: 35,
+    fontSize: 16,
+    color: "#BDBDBD",
+    lineHeight: 19,
+  },
+  textChangePhoto: {
+    marginTop: -50,
+    marginLeft: 30,
+    fontSize: 16,
+    color: "#BDBDBD",
+    lineHeight: 19,
+  },
+  description: {
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderColor: "#E8E8E8",
+    fontSize: 16,
+    height: 50,
+    width: 343,
+    color: "#212121",
+    marginTop: 20,
+  },
+  mapPin: {
+    top: -36,
+  },
+  publishBtn: {
+    width: 343,
+    height: 51,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 100,
+    marginBottom: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 3,
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: 30,
+  },
+  btnText: {
+    color: "#BDBDBD",
+    fontSize: 16,
+  },
+  publishBtnActive: {
+    marginTop: 3,
+    width: 343,
+    height: 51,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 100,
+    marginBottom: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  btnTextActive: {
+    color: "#FF6C00",
+    fontSize: 16,
+  },
+  trashBtn: {
+    width: 70,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F6F6F6",
+    borderRadius: 100,
+    marginLeft: "auto",
+    marginRight: "auto",
+	 marginBottom: 20,
+  },
+
+  camera: { flex: 1 },
+  photoView: {
+    flex: 1,
+    backgroundColor: "transparent",
+    justifyContent: "center",
+  },
+
+  flipContainer: {
+    flex: 0.1,
+    alignSelf: "flex-end",
+  },
+
+  button: { alignSelf: "center" },
+  buttonTransparent: {
+    top: -150,
+    left: 170,
+  },
+
+  takePhotoOut: {
+    borderWidth: 2,
+    borderColor: "white",
+    height: 50,
+    width: 50,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+  },
+
+  takePhotoInner: {
+    borderWidth: 2,
+    borderColor: "white",
+    height: 40,
+    width: 40,
+    backgroundColor: "white",
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

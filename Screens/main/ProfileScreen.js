@@ -11,19 +11,11 @@ import {
   Dimensions,
 } from "react-native";
 
-// import CrossSvg from "../../assets/icons/cross-icon.svg";
-// import LogOutSvg from "../../assets/icons/log-out.svg";
-// import MessageSvg from "../../assets/icons/message-icon.svg";
-// import LikeSvg from "../../assets/icons/thumbs-up.svg";
-// import MapPinSvg from "../../assets/icons/map-pin.svg";
 import { authSignOutUser } from "../../redux/auth/authOperations";
 
-import { Feather } from "@expo/vector-icons";
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase/config";
-import { useDispatch } from "react-redux";
+import { Feather, AntDesign, SimpleLineIcons  } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
 
-// import styles from "./profileScreen.style";
 
 const posts = [
   {
@@ -69,7 +61,16 @@ const posts = [
 ];
 
 export default function ProfileScreen() {
-  const dispatch = useDispatch();
+	const { nickName, userId } = useSelector((state) => state.auth)
+	const dispatch = useDispatch();
+
+	let userNameAvatar;
+	if (nickName) {
+		userNameAvatar = nickName.trim().slice(0, 1).toUpperCase();
+	}
+ 
+
+  
 
   const signOut = () => {
     dispatch(authSignOutUser());
@@ -83,26 +84,28 @@ export default function ProfileScreen() {
       >
         <View style={styles.form}>
           <View style={styles.add}>
-            <Image
+            {/* <Image
               source={require("../../assets/images/user-photo.jpg")}
               style={styles.photo}
-            ></Image>
+            ></Image> */}
+				<Text style={styles.avatar}>{userNameAvatar}</Text>
 
             <TouchableOpacity onPress={signOut}>
               <Feather
                 style={styles.logout}
                 name="log-out"
                 size={24}
-                color="green"
+                color="#BDBDBD"
               />
-              {/* <LogOutSvg style={styles.logout} /> */}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.addBtn}>
               {/* <CrossSvg /> */}
+				  <AntDesign name="plus" size={18} color="gray" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.userName}>Natali Romanova</Text>
+
+          <Text style={styles.userName}>{nickName}</Text>
 
           <View style={styles.postsList}>
             <FlatList
@@ -113,15 +116,18 @@ export default function ProfileScreen() {
                   <Text style={styles.photoName}>{item.title}</Text>
                   <View style={styles.postInfo}>
                     {/* <MessageSvg style={styles.icon} fill={"#FF6C00"} /> */}
+						  <Feather name="message-circle" size={24}  style={styles.iconMessage} />
                     <Text style={styles.messagesQuantity}>
                       {item.commentsQuantity}
                     </Text>
                     {/* <LikeSvg style={styles.icon} stroke={"#FF6C00"} /> */}
+						  <AntDesign name="like2" size={24} style={styles.icon} />
                     <Text style={styles.likesQuantity}>
                       {item.likesQuantity}
                     </Text>
                     <View style={styles.place}>
                       {/* <MapPinSvg style={styles.icon} /> */}
+							 <SimpleLineIcons name="location-pin" size={20} color="gray" marginRight={5} />
                       <Text style={styles.region}>{item.place}</Text>
                     </View>
                   </View>
@@ -164,17 +170,30 @@ const styles = StyleSheet.create({
 	  alignItems: "center",
 	},
 	add: {
-	  width: 120,
-	  height: 120,
+	  width: 90,
+	  height: 90,
 	  backgroundColor: "#F6F6F6",
 	  borderRadius: 16,
 	  position: "absolute",
-	  top: -60,
+	  top: -40,
 	  zIndex: 2,
+
+	//   flex: 1,
+      //   flexDirection: 'row',
+      //   backgroundColor: 'lightgray',
+      //   justifyContent: 'center',
+      //   alignItems: 'center',
 	},
-	photo: {
-	  borderRadius: 16,
-	},
+	avatar: {
+		textAlign: 'center',
+		fontWeight: 'bold',
+		fontSize: 35,
+		marginTop: 18,
+		color: "darkviolet"
+	 },
+	// photo: {
+	//   borderRadius: 16,
+	// },
 	addBtn: {
 	  width: 25,
 	  height: 25,
@@ -184,10 +203,10 @@ const styles = StyleSheet.create({
 	  justifyContent: "center",
 	  backgroundColor: "rgba(255, 255, 255, 1)",
 	  borderRadius: 100,
-	  top: -40,
-	  left: 107,
+	  top: -10,
+	  left: 75,
 	},
-	logout: { position: "absolute", top: -40, left: 215 },
+	logout: { position: "absolute", top: -10, left: 210 },
 	userName: {
 	  fontSize: 30,
 	  fontWeight: "500",
@@ -196,7 +215,7 @@ const styles = StyleSheet.create({
 	  marginBottom: 18,
 	},
 	postsList: {
-	  marginTop: 35,
+	  marginTop: 15,
 	  marginBottom: 25,
 	  height: 380,
 	},
@@ -208,12 +227,17 @@ const styles = StyleSheet.create({
 	},
 	postInfo: {
 	  flexDirection: "row",
+	  alignItems: "center"
+	},
+	iconMessage: {
+	  marginRight: 5,
+	  transform: [{ rotate: '-100deg' }],
+	  color: "#FF6C00",
 	},
 	icon: {
-	  marginRight: 5,
-	  width: 24,
-	  height: 24,
-	},
+		marginRight: 5,
+		color: "#FF6C00",
+	 },
 	messagesQuantity: {
 	  fontSize: 16,
 	  marginRight: 15,

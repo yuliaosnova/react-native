@@ -17,17 +17,19 @@ export const registerDB =
 
       const user = await auth.currentUser;
 
-      await user.updateProfile({
-        displayName: name,
-      });
+      // await user.updateProfile({
+      //   displayName: name,
+		//   email: mail,
+      // });
 
       await updateProfile(auth.currentUser, {
         displayName: name,
+		  email: mail,
       });
 
-      const { uid, displayName } = await auth.currentUser;
+      const { uid, displayName, email } = await auth.currentUser;
 
-      console.log("createUser", uid, displayName);
+      console.log("createUser", uid, displayName, email);
 
       // const userUpdateProfile = {
       //   nickName: displayName,
@@ -38,6 +40,7 @@ export const registerDB =
         authSlice.actions.updateUserProfile({
           usrId: uid,
           nickName: displayName,
+			 email: email,
         })
       );
     } catch (error) {
@@ -77,13 +80,14 @@ export const loginDB =
 
 export const authStateChangeUser = () => async (dispatch, getState) => {
   onAuthStateChanged(auth, (user) => {
-    console.log("curentUser", user);
+   //  console.log("curentUser", user);
     if (user) {
       dispatch(authSlice.actions.authStateChange({ stateChange: true }));
       dispatch(
         authSlice.actions.updateUserProfile({
           nickName: user.displayName,
           userId: user.uid,
+			 email: user.email,
         })
       );
     }
