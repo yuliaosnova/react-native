@@ -9,10 +9,9 @@ import LoginScreen from "./Screens/auth/LoginScreen";
 import CreatePostsScreen from "./Screens/main/CreatePostsScreen";
 import ProfileScreen from "./Screens/main/ProfileScreen";
 import Home from "./Screens/main/Home";
-import { Ionicons } from '@expo/vector-icons'; 
-import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-
 
 const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
@@ -35,31 +34,63 @@ export const useRoute = (isAuth) => {
     );
   }
   return (
-    <MainTab.Navigator screenOptions={{
-		tabBarShowLabel: false,
-		tabBarActiveBackgroundColor: "#FF6C00",
-	 }}>
-      <MainTab.Screen options={{
-		headerShown: false,
-		tabBarIcon: ({focused}) => (<Ionicons name="grid-outline" size={24} color={focused && "#fff"} />),
-	 }} name="Home" component={Home}/>
-      <MainTab.Screen options={{
-			headerStyle: { 
-				height: 88,
-				borderBottomWidth: 1,
-				borderBottomColor: "rgba(0, 0, 0, 0.3)"
-			},
-			title: "Створити публікацію",
-			headerTitleAlign: 'center',
-			headerLeft: () => (
-				<TouchableOpacity><AntDesign name="arrowleft" size={24} color="#BDBDBD" style={{marginLeft: 10}} /></TouchableOpacity>
-			 ),	
-		tabBarIcon: ({focused}) => <AntDesign name="pluscircleo" size={24} color={focused && "#fff"} />
-	 }} name="Create"  component={CreatePostsScreen}/>
-      <MainTab.Screen options={{	
-		headerShown: false,
-		tabBarIcon: ({focused}) => <Ionicons name="ios-person-outline" size={24} color={focused && "#fff"} />
-	 }} name="Profile" component={ProfileScreen}/>
+    <MainTab.Navigator
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarActiveBackgroundColor: "#FF6C00",
+      }}
+    >
+      <MainTab.Screen
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons name="grid-outline" size={24} color={focused && "#fff"} />
+          ),
+        }}
+        name="Home"
+        component={Home}
+      />
+      <MainTab.Screen
+        options={{
+          headerStyle: {
+            height: 88,
+            borderBottomWidth: 1,
+            borderBottomColor: "rgba(0, 0, 0, 0.3)",
+          },
+          title: "Створити публікацію",
+          headerTitleAlign: "center",
+			 backBehavior: 'history',
+         //  headerLeft: () => (
+         //    <TouchableOpacity>
+         //      <AntDesign
+         //        name="arrowleft"
+         //        size={24}
+         //        color="#BDBDBD"
+         //        style={{ marginLeft: 10 }}
+         //      />
+         //    </TouchableOpacity>
+         //  ),
+          tabBarIcon: ({ focused }) => (
+            <AntDesign name="pluscircleo" size={24} color={focused && "#fff"} />
+          ),
+        }}
+        name="Create"
+        component={CreatePostsScreen}
+      />
+      <MainTab.Screen
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name="ios-person-outline"
+              size={24}
+              color={focused && "#fff"}
+            />
+          ),
+        }}
+        name="Profile"
+        component={ProfileScreen}
+      />
     </MainTab.Navigator>
   );
 };

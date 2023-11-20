@@ -14,14 +14,14 @@ import {
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
 
-//  import CameraSvg from "../../assets/icons/camera.svg";
-//  import MapPinSvg from "../../assets/icons/map-pin.svg";
-//  import TrashSvg from "../../assets/icons/trash.svg";
-import { Feather, AntDesign, SimpleLineIcons } from "@expo/vector-icons";
-
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  SimpleLineIcons,
+  MaterialCommunityIcons,
+  Ionicons,
+} from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { db, storage } from "../../firebase/config";
@@ -85,20 +85,18 @@ export default function CreatePostsScreen() {
   };
 
   const publish = async () => {
-    console.log("PHOTO NAME", photoName);
-    console.log("LOCATON", location);
     await savePhotoToStorage(photo);
 
-	 if(!photoURL) return;
+    if (!photoURL) return;
 
     const docRef = await addDoc(collection(db, "posts"), {
       photo: photoURL,
       photoName,
       location: location.coords,
-		place,
+      place,
       userId,
       userName: nickName,
-		date: new Date().toLocaleString()
+      date: new Date().toLocaleString(),
     });
 
     console.log("Document written with ID: ", docRef.id);
@@ -130,7 +128,6 @@ export default function CreatePostsScreen() {
 
     uploadBytes(imagesRef, blob).then((snapshot) => {
       getDownloadURL(snapshot.ref).then(async (url) => {
-        console.log("URL", url);
         setPhotoURL(url);
       });
     });
@@ -155,7 +152,12 @@ export default function CreatePostsScreen() {
                   { backgroundColor: "rgba(255, 255, 255, 0.3)" },
                 ]}
               >
-                {/* <CameraSvg /> */}
+                <Ionicons
+                  name="md-camera"
+                  size={24}
+                  color="#BDBDBD"
+                  style={{ zindex: 5 }}
+                />
               </View>
             </TouchableOpacity>
             <Text style={styles.textChangePhoto}>Редагувати фото</Text>
@@ -174,7 +176,14 @@ export default function CreatePostsScreen() {
                   }}
                 ></TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={takePhoto}>
-                  <View style={styles.cameraCircle}>{/* <CameraSvg /> */}</View>
+                  <View style={styles.cameraCircle}>
+                    <Ionicons
+                      name="md-camera"
+                      size={24}
+                      color="#BDBDBD"
+                      style={{ zindex: 5 }}
+                    />
+                  </View>
                 </TouchableOpacity>
               </View>
             </Camera>
@@ -202,19 +211,17 @@ export default function CreatePostsScreen() {
               onChangeText={setPlace}
             ></TextInput>
 
-<TouchableOpacity
-                  style={styles.place}
-                  onPress={() => navigation.navigate("Map")}
-                >
-            <SimpleLineIcons
-              name="location-pin"
-              size={20}
-              color="gray"
-              style={styles.mapPin}
-            />
-				 </TouchableOpacity>
-
-            {/* <MapPinSvg style={styles.mapPin} /> */}
+            <TouchableOpacity
+              style={styles.place}
+              onPress={() => navigation.navigate("Map")}
+            >
+              <SimpleLineIcons
+                name="location-pin"
+                size={20}
+                color="gray"
+                style={styles.mapPin}
+              />
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity
@@ -227,7 +234,6 @@ export default function CreatePostsScreen() {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.trashBtn} onPress={deletePost}>
-            {/* <TrashSvg /> */}
             <MaterialCommunityIcons
               name="trash-can-outline"
               size={24}
@@ -338,7 +344,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginLeft: "auto",
     marginRight: "auto",
-	 marginBottom: 20,
+    marginBottom: 20,
   },
 
   camera: { flex: 1 },

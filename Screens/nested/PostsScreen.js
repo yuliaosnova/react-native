@@ -34,21 +34,18 @@ export default function PostsScreen() {
 
   const getAllPosts = async () => {
     const postsRef = collection(db, "posts");
-    const q = query(
-      postsRef,
-      where("userId", "==", userId)
-    );
+    const q = query(postsRef, where("userId", "==", userId));
 
-     onSnapshot(q, orderBy("date", "desc"), (querySnapshot) => {
-       const documents = querySnapshot.docs.map((doc) => {
-         return {
-           ...doc.data(),
-           id: doc.id,
-         };
-       });
-       console.log("curent data: ", documents);
-       setPosts(documents);
-     });
+    onSnapshot(q, orderBy("date", "desc"), (querySnapshot) => {
+      const documents = querySnapshot.docs.map((doc) => {
+        return {
+          ...doc.data(),
+          id: doc.id,
+        };
+      });
+      console.log("curent data: ", documents);
+      setPosts(documents);
+    });
   };
 
   useEffect(() => {
@@ -91,19 +88,13 @@ export default function PostsScreen() {
                 </TouchableOpacity>
 
                 <Text style={styles.messagesQuantity}>0</Text>
-                {/* <TouchableOpacity
+                <SimpleLineIcons
+                  name="location-pin"
+                  size={20}
+                  color="gray"
                   style={styles.place}
-                  onPress={() => navigation.navigate("Map")}
-                > */}
-                  <SimpleLineIcons
-                    name="location-pin"
-                    size={20}
-                    color="gray"
-                  //   marginRight={5}
-						  style={styles.place}
-                  />
-                  <Text style={styles.region}>{item.place}</Text>
-                {/* </TouchableOpacity> */}
+                />
+                <Text style={styles.region}>{item.place}</Text>
               </View>
             </View>
           )}
@@ -130,10 +121,6 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: "center",
   },
-  //   photo: {
-  //     width: 60,
-  //     height: 60,
-  //   },
   avatar: {
     textAlign: "center",
     fontWeight: "bold",
@@ -168,12 +155,11 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginTop: 4,
     marginBottom: 4,
-	 paddingHorizontal: 5,
+    paddingHorizontal: 5,
   },
   postInfo: {
     flexDirection: "row",
-	 paddingHorizontal: 5,
-	//  paddingVertical: 5,
+    paddingHorizontal: 5,
   },
   icon: {
     marginRight: 5,
@@ -192,12 +178,11 @@ const styles = StyleSheet.create({
   place: {
     flexDirection: "row",
     marginLeft: "auto",
-	 marginRight: 5,
+    marginRight: 5,
   },
   region: {
     fontSize: 16,
     color: "#212121",
-   //  textDecorationLine: "underline",
   },
 
   footer: {

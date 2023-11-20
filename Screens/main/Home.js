@@ -2,17 +2,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 
 import PostsScreen from "../../Screens/nested/PostsScreen";
-// import CommentsScreen from "../nested/CommentsScreen";
 import MapScreen from "../nested/MapScreen";
 import CommentsScreen from "../nested/CommentsScreen";
 
-import { MaterialIcons } from "@expo/vector-icons";
-import { AntDesign,  Feather } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { AntDesign, MaterialIcons  } from "@expo/vector-icons";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
 import { authSignOutUser } from "../../redux/auth/authOperations";
-
 
 const NestedStack = createStackNavigator();
 
@@ -40,13 +37,13 @@ const Home = () => {
           title: "Публікації",
           headerTitleAlign: "center",
           headerRight: () => (
-				<TouchableOpacity onPress={signOut}>
-                          <MaterialIcons
-              name="logout"
-              size={24}
-              color="#BDBDBD"
-              style={{ marginRight: 10 }}
-            />
+            <TouchableOpacity onPress={signOut}>
+              <MaterialIcons
+                name="logout"
+                size={24}
+                color="#BDBDBD"
+                style={{ marginRight: 10 }}
+              />
             </TouchableOpacity>
           ),
           tabBarIcon: ({ focused }) => (
@@ -64,11 +61,11 @@ const Home = () => {
             borderBottomWidth: 1,
             borderBottomColor: "rgba(0, 0, 0, 0.3)",
           },
-		
+
           title: "Коментарі",
           headerTitleAlign: "center",
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={() => navigation.dispatch(CommonActions.goBack())}>
               <AntDesign
                 name="arrowleft"
                 size={24}
