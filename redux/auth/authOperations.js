@@ -19,12 +19,12 @@ export const registerDB =
 
       // await user.updateProfile({
       //   displayName: name,
-		//   email: mail,
+      //   email: mail,
       // });
 
       await updateProfile(auth.currentUser, {
         displayName: name,
-		  email: mail,
+        email: mail,
       });
 
       const { uid, displayName, email } = await auth.currentUser;
@@ -40,11 +40,11 @@ export const registerDB =
         authSlice.actions.updateUserProfile({
           usrId: uid,
           nickName: displayName,
-			 email: email,
+          email: email,
         })
       );
     } catch (error) {
-		console.log("error.message", error.message);
+      console.log("error.message", error.message);
       throw error;
     }
   };
@@ -80,22 +80,19 @@ export const loginDB =
 
 export const authStateChangeUser = () => async (dispatch, getState) => {
   onAuthStateChanged(auth, (user) => {
-   //  console.log("curentUser", user);
     if (user) {
+      const userUpdateProfile = {
+        nickName: user.displayName,
+        userId: user.uid,
+        email: user.email,
+      };
       dispatch(authSlice.actions.authStateChange({ stateChange: true }));
-      dispatch(
-        authSlice.actions.updateUserProfile({
-          nickName: user.displayName,
-          userId: user.uid,
-			 email: user.email,
-        })
-      );
+      dispatch(authSlice.actions.updateUserProfile(userUpdateProfile));
     }
   });
 };
 
 export const authSignOutUser = () => async (dispatch) => {
-  signOut(auth);
-  dispatch(authSlice.actions.authSignOut());
-  console.log(" User is sign out");
+  await signOut(auth);
+    dispatch(authSlice.actions.authSignOut());
 };

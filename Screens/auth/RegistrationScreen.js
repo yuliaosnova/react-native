@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import {
   ImageBackground,
   StyleSheet,
@@ -12,37 +12,28 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-
-import PlusSvg from "../../assets/icons/plus.svg";
 import { useDispatch } from "react-redux";
+
 import { registerDB } from "../../redux/auth/authOperations";
 
 const initialState = {
-	name: "",
-	mail: "",
-	password: "",
-}
+  name: "",
+  mail: "",
+  password: "",
+};
 
 export default function RegistrationScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [isMailFocused, setIsMailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-
   const [state, setState] = useState(initialState);
-
-//   const [name, setName] = useState("");
-//   const [mail, setMail] = useState("");
-//   const [password, setPassword] = useState("");
-
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-	console.log("state: ", state);
-	dispatch(registerDB(state)); 
- };
+    dispatch(registerDB(state));
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -52,9 +43,7 @@ export default function RegistrationScreen() {
       >
         <View style={styles.form}>
           <View style={styles.add}>
-            <TouchableOpacity style={styles.addBtn}>
-              {/* <PlusSvg /> */}
-            </TouchableOpacity>
+            {/* <TouchableOpacity style={styles.addBtn}></TouchableOpacity> */}
           </View>
           <Text style={styles.title}>Реєстрація</Text>
           <View>
@@ -68,7 +57,9 @@ export default function RegistrationScreen() {
               placeholderTextColor="#BDBDBD"
               onBlur={() => setIsNameFocused(false)}
               onFocus={() => setIsNameFocused(true)}
-              onChangeText={(value) => setState((prevState) => ({...prevState, name: value}))}
+              onChangeText={(value) =>
+                setState((prevState) => ({ ...prevState, name: value }))
+              }
             ></TextInput>
           </View>
 
@@ -84,7 +75,9 @@ export default function RegistrationScreen() {
               autoComplete="email"
               onBlur={() => setIsMailFocused(false)}
               onFocus={() => setIsMailFocused(true)}
-              onChangeText={(value) => setState((prevState) => ({...prevState, mail: value}))}
+              onChangeText={(value) =>
+                setState((prevState) => ({ ...prevState, mail: value }))
+              }
             ></TextInput>
           </View>
 
@@ -104,7 +97,9 @@ export default function RegistrationScreen() {
                 autoComplete="password"
                 onBlur={() => setIsPasswordFocused(false)}
                 onFocus={() => setIsPasswordFocused(true)}
-                onChangeText={(value) => setState((prevState) => ({...prevState, password: value}))}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, password: value }))
+                }
               ></TextInput>
             </KeyboardAvoidingView>
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -117,7 +112,7 @@ export default function RegistrationScreen() {
           <TouchableOpacity
             style={styles.registerBtn}
             accessibilityLabel="Register button"
-				onPress={handleSubmit}
+            onPress={handleSubmit}
           >
             <Text style={styles.btnText}>Зареєструватися</Text>
           </TouchableOpacity>
@@ -220,6 +215,6 @@ const styles = StyleSheet.create({
     color: "#1B4371",
     fontSize: 16,
     top: -52,
-    left: 260,
+    left: 255,
   },
 });

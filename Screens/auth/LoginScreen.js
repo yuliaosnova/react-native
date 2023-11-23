@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { useDispatch } from "react-redux";
+
 import { loginDB } from "../../redux/auth/authOperations";
 
 const initialState = {
@@ -19,23 +20,15 @@ const initialState = {
 	password: "",
 }
 
-
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isMailFocused, setIsMailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [state, setState] = useState(initialState);
-
-//   const [mail, setMail] = useState("");
-//   const [password, setPassword] = useState("");
-
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-   //  console.log(`mail: ${mail}, password: ${password}`);
-	console.log("state: ", state);
 	dispatch(loginDB(state)); 
   };
 
@@ -170,8 +163,8 @@ const styles = StyleSheet.create({
   },
   showPassword: {
     color: "#1B4371",
-    fontSize: 16,
+    fontSize: 14,
     top: -52,
-    left: 260,
+    left: 255,
   },
 });

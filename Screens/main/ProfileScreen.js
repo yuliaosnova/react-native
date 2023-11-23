@@ -10,78 +10,33 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Feather, AntDesign, SimpleLineIcons } from "@expo/vector-icons";
+import {
+  onSnapshot,
+  collection,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
 
+import { db } from "../../firebase/config";
+import { getUserLetter } from "../../helpers/getUserLetter";
 import { authSignOutUser } from "../../redux/auth/authOperations";
 
-import { Feather, AntDesign, SimpleLineIcons } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { useState } from "react";
-
-import {
-	onSnapshot,
-	collection,
-	query,
-	where,
-	orderBy,
- } from "firebase/firestore";
-import { db } from "../../firebase/config";
-
-// const posts = [
-//   {
-//     id: 1,
-//     image: require("../../assets/images/forest-photo.jpg"),
-//     title: "Ліс",
-//     commentsQuantity: "8",
-//     likesQuantity: "153",
-//     place: "Ukraine",
-//   },
-//   {
-//     id: 2,
-//     image: require("../../assets/images/sunset-photo.jpg"),
-//     title: "Захід на Чорному морі",
-//     commentsQuantity: "3",
-//     likesQuantity: "200",
-//     place: "Ukraine",
-//   },
-//   {
-//     id: 3,
-//     image: require("../../assets/images/house-photo.jpg"),
-//     title: "Старий будиночок у Венеції",
-//     commentsQuantity: "50",
-//     likesQuantity: "200",
-//     place: "Italy",
-//   },
-//   {
-//     id: 4,
-//     image: require("../../assets/images/sunset-photo.jpg"),
-//     title: "Захід на Чорному морі",
-//     commentsQuantity: "3",
-//     likesQuantity: "200",
-//     place: "Ukraine",
-//   },
-//   {
-//     id: 5,
-//     image: require("../../assets/images/house-photo.jpg"),
-//     title: "Старий будиночок у Венеції",
-//     commentsQuantity: "50",
-//     likesQuantity: "200",
-//     place: "Italy",
-//   },
-// ];
-
 export default function ProfileScreen() {
-  const { nickName, userId } = useSelector((state) => state.auth);
   const [posts, setPosts] = useState([]);
-  console.log("POSTS", posts)
+  const { nickName, email, userId } = useSelector((state) => state.auth);
+  console.log("NICKNAME: ", nickName)
   const dispatch = useDispatch();
 
-  let userNameAvatar;
-  if (nickName) {
-    userNameAvatar = nickName.trim().slice(0, 1).toUpperCase();
-  }
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
   const signOut = () => {
+	console.log("on logout!")
     dispatch(authSignOutUser());
   };
 
@@ -96,14 +51,10 @@ export default function ProfileScreen() {
           id: doc.id,
         };
       });
-      console.log("curent data: ", documents);
+      // console.log("curent data: ", documents);
       setPosts(documents);
     });
   };
-
-  useEffect(() => {
-    getAllPosts();
-  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -113,36 +64,33 @@ export default function ProfileScreen() {
       >
         <View style={styles.form}>
           <View style={styles.add}>
-            {/* <Image
-              source={require("../../assets/images/user-photo.jpg")}
-              style={styles.photo}
-            ></Image> */}
-            <Text style={styles.avatar}>{userNameAvatar}</Text>
-
+            {nickName && (
+              <Text style={styles.avatar}>{getUserLetter(email)}</Text>
+            )}
             <TouchableOpacity onPress={signOut}>
               <Feather
                 style={styles.logout}
                 name="log-out"
                 size={24}
-                color="#BDBDBD"
+                color="green"
               />
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.addBtn}>
+            {/* <TouchableOpacity style={styles.addBtn}>
               <AntDesign name="plus" size={18} color="gray" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-
           <Text style={styles.userName}>{nickName}</Text>
-
           <View style={styles.postsList}>
             <FlatList
               data={posts}
               renderItem={({ item }) => (
                 <View style={styles.post}>
-                  <Image source={{
-                  uri: item.photo,
-                }} style={styles.picture}></Image>
+                  <Image
+                    source={{
+                      uri: item.photo,
+                    }}
+                    style={styles.picture}
+                  ></Image>
                   <Text style={styles.photoName}>{item.photoName}</Text>
                   <View style={styles.postInfo}>
                     <Feather
@@ -150,13 +98,9 @@ export default function ProfileScreen() {
                       size={24}
                       style={styles.iconMessage}
                     />
-                    <Text style={styles.messagesQuantity}>
-                      10
-                    </Text>
+                    <Text style={styles.info}>{item.commentsCount}</Text>
                     <AntDesign name="like2" size={24} style={styles.icon} />
-                    <Text style={styles.likesQuantity}>
-                      100
-                    </Text>
+                    <Text style={styles.info}>0</Text>
                     <View style={styles.place}>
                       <SimpleLineIcons
                         name="location-pin"
@@ -164,7 +108,7 @@ export default function ProfileScreen() {
                         color="gray"
                         marginRight={5}
                       />
-                      <Text style={styles.region}>{item.place}</Text>
+                      <Text style={styles.info}>{item.place}</Text>
                     </View>
                   </View>
                 </View>
@@ -245,10 +189,10 @@ const styles = StyleSheet.create({
     maxHeight: 400,
   },
   picture: {
-	width: 360,
-	height: 230,
-	borderRadius: 10,
- },
+    width: 360,
+    height: 230,
+    borderRadius: 10,
+  },
   photoName: {
     fontSize: 16,
     fontWeight: "500",
@@ -268,20 +212,21 @@ const styles = StyleSheet.create({
     marginRight: 5,
     color: "#FF6C00",
   },
-  messagesQuantity: {
+  info: {
     fontSize: 16,
-    marginRight: 15,
+    color: "#BDBDBD",
+    marginRight: 10,
   },
   place: {
     flexDirection: "row",
     marginLeft: "auto",
-	 marginRight: 5,
+    marginRight: 5,
   },
-  region: {
-    fontSize: 16,
-    color: "#212121",
-   //  textDecorationLine: "underline",
-  },
+  //   region: {
+  //     fontSize: 16,
+  //     color: "#212121",
+  //    //  textDecorationLine: "underline",
+  //   },
   footer: {
     width: Dimensions.get("window").width,
     height: 73,

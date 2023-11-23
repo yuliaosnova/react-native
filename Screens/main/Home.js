@@ -1,14 +1,14 @@
-import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
+import { useDispatch } from "react-redux";
+
+import { createStackNavigator } from "@react-navigation/stack";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 import PostsScreen from "../../Screens/nested/PostsScreen";
 import MapScreen from "../nested/MapScreen";
 import CommentsScreen from "../nested/CommentsScreen";
-
-import { AntDesign, MaterialIcons  } from "@expo/vector-icons";
-import { CommonActions, useNavigation } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { useDispatch } from "react-redux";
 import { authSignOutUser } from "../../redux/auth/authOperations";
 
 const NestedStack = createStackNavigator();
@@ -20,6 +20,7 @@ const Home = () => {
   const signOut = () => {
     dispatch(authSignOutUser());
   };
+
   return (
     <NestedStack.Navigator
       screenOptions={{
@@ -41,7 +42,7 @@ const Home = () => {
               <MaterialIcons
                 name="logout"
                 size={24}
-                color="#BDBDBD"
+                color="green"
                 style={{ marginRight: 10 }}
               />
             </TouchableOpacity>
@@ -65,7 +66,9 @@ const Home = () => {
           title: "Коментарі",
           headerTitleAlign: "center",
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.dispatch(CommonActions.goBack())}>
+            <TouchableOpacity
+              onPress={() => navigation.dispatch(CommonActions.goBack())}
+            >
               <AntDesign
                 name="arrowleft"
                 size={24}

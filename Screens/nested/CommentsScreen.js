@@ -8,80 +8,103 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
+import {
+  addDoc,
+  collection,
+  doc,
+  increment,
+  onSnapshot,
+  orderBy,
+  updateDoc,
+} from "firebase/firestore";
 
-const comments = [
-  {
-    id: 1,
-    userId: 2,
-    userAvatar: require("../../assets/images/avatar-2.png"),
-    date: "09 червня, 2020",
-    time: "08:40",
-    text: "Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!",
-  },
-  {
-    id: 2,
-    userId: 1,
-    userAvatar: require("../../assets/images/user-photo.jpg"),
-    date: "09 червня, 2020",
-    time: "09:14",
-    text: "A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.",
-  },
-  {
-    id: 3,
-    userId: 2,
-    userAvatar: require("../../assets/images/avatar-2.png"),
-    date: "09 червня, 2020",
-    time: "09:20",
-    text: "Thank you! That was very helpful!",
-  },
-];
+import { db } from "../../firebase/config";
+import { getUserLetter } from "../../helpers/getUserLetter";
 
-const CommentsScreen = () => {
+const CommentsScreen = ({ route }) => {
+  const { postId, photo } = route.params;
   const [comment, setComment] = useState("");
+  const [allComments, setAllComments] = useState([]);
+  const { nickName } = useSelector((state) => state.auth);
 
-  let currentUserId = 1;
-  function isCurrentUser(id) {
-    if (id === currentUserId) return true;
+  useEffect(() => {
+    getAllComments();
+  }, []);
+
+  function isCurrentUser(name) {
+    if (name === nickName) return true;
     return false;
   }
 
-  const onBtnClick = (message) => {
-    console.log(message);
-    setComment(message);
+  const getAllComments = async () => {
+    const commentRef = collection(db, "posts", postId, "comments");
+
+    onSnapshot(commentRef, orderBy("date", "desc"), (querySnapshot) => {
+      const documents = querySnapshot.docs.map((doc) => {
+        return {
+          ...doc.data(),
+          id: doc.id,
+        };
+      });
+      setAllComments(documents);
+    });
+  };
+
+  const createMessage = async () => {
+    const docRef = doc(db, "posts", postId);
+    const comRef = collection(docRef, "comments");
+    await addDoc(comRef, {
+      text: comment,
+      nickName,
+      date: new Date().toLocaleString(),
+    });
+
+    await updateDoc(docRef, {
+      commentsCount: increment(1),
+    });
+    clearComments();
+  };
+
+  const clearComments = () => {
+    setComment("");
   };
 
   return (
     <SafeAreaView style={styles.container}>
-
       <View style={styles.main}>
         <View style={styles.placeholder}>
           <Image
-            source={require("../../assets/images/sunset-photo.jpg")}
+            source={{
+              uri: photo,
+            }}
             style={styles.image}
           ></Image>
         </View>
 
         <View style={styles.comentsList}>
           <FlatList
-            data={comments}
+            data={allComments}
             renderItem={({ item }) => (
               <View
                 style={[
                   styles.coment,
-                  isCurrentUser(item.userId) && {
+                  isCurrentUser(item.nickName) && {
                     flexDirection: "row-reverse",
                   },
                 ]}
               >
-                <Image source={item.userAvatar} style={styles.avatar}></Image>
+                <View style={styles.avatar}>
+                  <Text style={styles.userLetter}>
+                    {getUserLetter(item.nickName)}
+                  </Text>
+                </View>
                 <View style={styles.comentBlock}>
                   <Text style={styles.comentText}>{item.text}</Text>
                   <View style={styles.comentDateContainer}>
-                    <Text style={styles.comentDate}>{item.date} | </Text>
-                    <Text style={styles.comentDate}>{item.time}</Text>
+                    <Text style={styles.comentDate}>{item.date}</Text>
                   </View>
                 </View>
               </View>
@@ -93,11 +116,12 @@ const CommentsScreen = () => {
 
       <TextInput
         style={[styles.input]}
+        value={comment}
         placeholder="Коментувати..."
         placeholderTextColor="#BDBDBD"
         onChangeText={setComment}
       ></TextInput>
-      <TouchableOpacity style={styles.sendBtn} onPress={onBtnClick}>
+      <TouchableOpacity style={styles.sendBtn} onPress={createMessage}>
         <AntDesign name="arrowup" size={20} color="white" />
       </TouchableOpacity>
     </SafeAreaView>
@@ -150,6 +174,16 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 100,
+  },
+  userLetter: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 10,
+    color: "darkviolet",
+    backgroundColor: "#F6F6F6",
+    paddingVertical: 6,
+    // paddingHorizontal: 18,
+    borderRadius: 50,
   },
 
   input: {

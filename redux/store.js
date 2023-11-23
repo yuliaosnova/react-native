@@ -14,9 +14,6 @@ import { authSlice } from "./auth/authReducer";
 import thunkMiddleware from "redux-thunk";
 
 const rootReducer = combineReducers({
-  //   collectedMovies: collectionReducer,
-  //   [genresApi.reducerPath]: genresApi.reducer,
-  //   user: userSlice.reducer,
   [authSlice.name]: authSlice.reducer,
 });
 

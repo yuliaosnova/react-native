@@ -19,17 +19,16 @@ import {
   MaterialCommunityIcons,
   Ionicons,
 } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import { useEffect, useRef, useState } from "react";
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import { useRef, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { db, storage } from "../../firebase/config";
 import { uriToBlob } from "../../helpers/uriToBlob";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export default function CreatePostsScreen() {
-  //   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState(null);
   const [photoURL, setPhotoURL] = useState(null);
@@ -39,27 +38,19 @@ export default function CreatePostsScreen() {
   const navigation = useNavigation();
   let cameraRef = useRef();
 
-  const { userId, nickName } = useSelector((state) => state.auth);
+  const { userId, nickName, email } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      //   if (status !== 'granted') {
-      // 	 setErrorMsg('Permission to access location was denied');
-      // 	 return;
-      //   }
+	(async () => {
+	  let { status } = await Location.requestForegroundPermissionsAsync();
+	  if (status !== "granted") {
+		 console.log("Permission to access location was denied");
+	  }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
-
-  //   if (hasPermission === null) {
-  //     return <View />;
-  //   }
-  //   if (hasPermission === false) {
-  //     return <Text>No access to camera</Text>;
-  //   }
+	  let locationRes = await Location.getCurrentPositionAsync({});
+	  setLocation(locationRes);
+	})();
+ }, []);
 
   const takePhoto = async () => {
     if (photo) {
@@ -74,12 +65,17 @@ export default function CreatePostsScreen() {
       };
 
       let newPhoto = await cameraRef.current.takePictureAsync(options);
+		let location = await Location.getCurrentPositionAsync({});
+		// console.log("latitude: ", location.coords.latitude)
+		// console.log("longitude: ", location.coords.longitude)
+      setLocation(location);
       setPhoto(newPhoto);
     }
   };
 
   const deletePost = () => {
     setPhoto(null);
+	 setPhotoURL(null);
     setPhotoName("");
     setPlace("");
   };
@@ -87,33 +83,20 @@ export default function CreatePostsScreen() {
   const publish = async () => {
     await savePhotoToStorage(photo);
 
-    if (!photoURL) return;
+   //  if (!photoURL) return;
 
     const docRef = await addDoc(collection(db, "posts"), {
       photo: photoURL,
       photoName,
-      location: location.coords,
+      location: location,
       place,
       userId,
       userName: nickName,
+      userEmail: email,
+      commentsCount: 0,
       date: new Date().toLocaleString(),
     });
-
-    console.log("Document written with ID: ", docRef.id);
-    //  let { status } = await Location.requestForegroundPermissionsAsync();
-    //  if (status !== "granted") {
-    //    console.log("Permission to access location was denied");
-    //  }
-
-    //  let location = await Location.getCurrentPositionAsync({});
-    //  const coords = {
-    //    latitude: location.coords.latitude,
-    //    longitude: location.coords.longitude,
-    //  };
-    //  //  console.log(coords)
-    //  setLocation(coords);
-    //  console.log(`Назва: ${photoName}, Місцевість: ${place}`);
-    deletePost();
+    await deletePost();
     navigation.navigate("Home", { screen: "PostsScreen" });
   };
 
@@ -156,7 +139,7 @@ export default function CreatePostsScreen() {
                   name="md-camera"
                   size={24}
                   color="#BDBDBD"
-                  style={{ zindex: 5 }}
+                  style={{ zIndex: 5 }}
                 />
               </View>
             </TouchableOpacity>
@@ -181,7 +164,7 @@ export default function CreatePostsScreen() {
                       name="md-camera"
                       size={24}
                       color="#BDBDBD"
-                      style={{ zindex: 5 }}
+                      style={{ zIndex: 5 }}
                     />
                   </View>
                 </TouchableOpacity>

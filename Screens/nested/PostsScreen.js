@@ -6,69 +6,64 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-import { Feather, SimpleLineIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { db } from "../../firebase/config";
-import {
-  onSnapshot,
-  collection,
-  query,
-  where,
-  orderBy,
-} from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
+import { onSnapshot, collection, orderBy } from "firebase/firestore";
 import { FlatList } from "react-native-gesture-handler";
+import {
+  SimpleLineIcons,
+  AntDesign,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+
+import { db } from "../../firebase/config";
+import { getUserLetter } from "../../helpers/getUserLetter";
 
 export default function PostsScreen() {
   const navigation = useNavigation();
   const [posts, setPosts] = useState([]);
-  const { nickName, email, userId } = useSelector((state) => state.auth);
+  //   const { nickName, email, userId } = useSelector((state) => state.auth);
 
-  let userNameAvatar;
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
-  if (nickName) {
-    userNameAvatar = nickName.trim().slice(0, 1).toUpperCase();
-  }
+  //   if (nickName) {
+  //     userNameAvatar = nickName.trim().slice(0, 1).toUpperCase();
+  //   }
 
   const getAllPosts = async () => {
     const postsRef = collection(db, "posts");
-    const q = query(postsRef, where("userId", "==", userId));
 
-    onSnapshot(q, orderBy("date", "desc"), (querySnapshot) => {
+    onSnapshot(postsRef, orderBy("date", "desc"), (querySnapshot) => {
       const documents = querySnapshot.docs.map((doc) => {
         return {
           ...doc.data(),
           id: doc.id,
         };
       });
-      console.log("curent data: ", documents);
       setPosts(documents);
     });
   };
 
-  useEffect(() => {
-    getAllPosts();
-  }, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <View style={styles.userBox}>
-          <View style={styles.photo}>
-            <Text style={styles.avatar}>{userNameAvatar}</Text>
-          </View>
-          <View style={styles.userDesc}>
-            <Text style={styles.userName}>{nickName}</Text>
-            <Text style={styles.userEmail}>{email}</Text>
-          </View>
-        </View>
-
         <FlatList
           data={posts}
           renderItem={({ item }) => (
             <View style={styles.posts}>
+              <View style={styles.userBox}>
+                <View style={styles.photo}>
+                  <Text style={styles.avatar}>
+                    {getUserLetter(item.userName)}
+                  </Text>
+                </View>
+                <View style={styles.userDesc}>
+                  <Text style={styles.userName}>{item.userName}</Text>
+                  <Text style={styles.userEmail}>{item.userEmail}</Text>
+                </View>
+              </View>
               <Image
                 source={{
                   uri: item.photo,
@@ -78,23 +73,40 @@ export default function PostsScreen() {
               <Text style={styles.photoName}>{item.photoName}</Text>
               <View style={styles.postInfo}>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Comments")}
+                  onPress={() =>
+                    navigation.navigate("Comments", {
+                      postId: item.id,
+                      photo: item.photo,
+                    })
+                  }
                 >
-                  <Feather
-                    name="message-circle"
+                  <MaterialCommunityIcons
+                    name="message"
                     size={24}
                     style={styles.iconMessage}
                   />
                 </TouchableOpacity>
 
-                <Text style={styles.messagesQuantity}>0</Text>
-                <SimpleLineIcons
-                  name="location-pin"
-                  size={20}
-                  color="gray"
-                  style={styles.place}
-                />
-                <Text style={styles.region}>{item.place}</Text>
+                <Text style={styles.info}>{item.commentsCount}</Text>
+                <AntDesign name="like2" size={24} style={styles.icon} />
+                <Text style={styles.info}>0</Text>
+                <TouchableOpacity
+                  //   style={styles.place}
+                  onPress={() =>
+                    navigation.navigate("Map", {
+                      location: item.location,
+                    })
+                  }
+                >
+                  <SimpleLineIcons
+                    name="location-pin"
+                    size={20}
+                    color="gray"
+                    style={styles.place}
+                  />
+                </TouchableOpacity>
+
+                <Text style={styles.info}>{item.place}</Text>
               </View>
             </View>
           )}
@@ -112,7 +124,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   main: {
-    marginTop: 30,
     marginLeft: "auto",
     marginRight: "auto",
   },
@@ -120,6 +131,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     alignItems: "center",
+    marginBottom: 15,
   },
   avatar: {
     textAlign: "center",
@@ -159,32 +171,30 @@ const styles = StyleSheet.create({
   },
   postInfo: {
     flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 5,
   },
   icon: {
     marginRight: 5,
     width: 24,
     height: 24,
+    color: "#FF6C00",
   },
   iconMessage: {
     marginRight: 5,
-    transform: [{ rotate: "-100deg" }],
+    transform: [{ scaleX: -1 }],
     color: "#FF6C00",
   },
-  messagesQuantity: {
+  info: {
     fontSize: 16,
     color: "#BDBDBD",
+    marginRight: 10,
   },
   place: {
     flexDirection: "row",
     marginLeft: "auto",
     marginRight: 5,
   },
-  region: {
-    fontSize: 16,
-    color: "#212121",
-  },
-
   footer: {
     width: Dimensions.get("window").width,
     height: 73,
