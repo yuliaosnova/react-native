@@ -22,7 +22,7 @@ import {
 import { useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 import { db, storage } from "../../firebase/config";
 import { uriToBlob } from "../../helpers/uriToBlob";
 import { useSelector } from "react-redux";
@@ -31,7 +31,6 @@ import { useEffect } from "react";
 export default function CreatePostsScreen() {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState(null);
-  const [photoURL, setPhotoURL] = useState(null);
   const [photoName, setPhotoName] = useState("");
   const [place, setPlace] = useState("");
   const [location, setLocation] = useState("");
@@ -41,16 +40,16 @@ export default function CreatePostsScreen() {
   const { userId, nickName, email } = useSelector((state) => state.auth);
 
   useEffect(() => {
-	(async () => {
-	  let { status } = await Location.requestForegroundPermissionsAsync();
-	  if (status !== "granted") {
-		 console.log("Permission to access location was denied");
-	  }
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
 
-	  let locationRes = await Location.getCurrentPositionAsync({});
-	  setLocation(locationRes);
-	})();
- }, []);
+      let locationRes = await Location.getCurrentPositionAsync({});
+      setLocation(locationRes);
+    })();
+  }, []);
 
   const takePhoto = async () => {
     if (photo) {
@@ -65,9 +64,7 @@ export default function CreatePostsScreen() {
       };
 
       let newPhoto = await cameraRef.current.takePictureAsync(options);
-		let location = await Location.getCurrentPositionAsync({});
-		// console.log("latitude: ", location.coords.latitude)
-		// console.log("longitude: ", location.coords.longitude)
+      let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
       setPhoto(newPhoto);
     }
@@ -75,18 +72,15 @@ export default function CreatePostsScreen() {
 
   const deletePost = () => {
     setPhoto(null);
-	 setPhotoURL(null);
     setPhotoName("");
     setPlace("");
   };
 
   const publish = async () => {
-    await savePhotoToStorage(photo);
+    const storedPhoto = await savePhotoToStorage(photo);
 
-   //  if (!photoURL) return;
-
-    const docRef = await addDoc(collection(db, "posts"), {
-      photo: photoURL,
+   await addDoc(collection(db, "posts"), {
+      photo: storedPhoto,
       photoName,
       location: location,
       place,
@@ -94,9 +88,9 @@ export default function CreatePostsScreen() {
       userName: nickName,
       userEmail: email,
       commentsCount: 0,
-      date: new Date().toLocaleString(),
+		timestamp: Timestamp.fromDate(new Date("December 10, 1815")),
     });
-    await deletePost();
+    deletePost();
     navigation.navigate("Home", { screen: "PostsScreen" });
   };
 
@@ -109,10 +103,9 @@ export default function CreatePostsScreen() {
 
     const imagesRef = ref(storage, `image${uniquePhotoId}`);
 
-    uploadBytes(imagesRef, blob).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then(async (url) => {
-        setPhotoURL(url);
-      });
+    return uploadBytes(imagesRef, blob).then(async (snapshot) => {
+      const url = await getDownloadURL(snapshot.ref);
+		 return url;
     });
   }
 

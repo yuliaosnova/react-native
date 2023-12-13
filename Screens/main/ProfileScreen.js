@@ -28,7 +28,7 @@ import { authSignOutUser } from "../../redux/auth/authOperations";
 export default function ProfileScreen() {
   const [posts, setPosts] = useState([]);
   const { nickName, email, userId } = useSelector((state) => state.auth);
-  console.log("NICKNAME: ", nickName)
+  console.log("NICKNAME: ", nickName);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function ProfileScreen() {
   }, []);
 
   const signOut = () => {
-	console.log("on logout!")
+    console.log("on logout!");
     dispatch(authSignOutUser());
   };
 

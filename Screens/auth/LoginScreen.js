@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import {
   ImageBackground,
   StyleSheet,
@@ -16,9 +16,9 @@ import { useDispatch } from "react-redux";
 import { loginDB } from "../../redux/auth/authOperations";
 
 const initialState = {
-	mail: "",
-	password: "",
-}
+  mail: "",
+  password: "",
+};
 
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +29,7 @@ export default function LoginScreen() {
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-	dispatch(loginDB(state)); 
+    dispatch(loginDB(state));
   };
 
   return (
@@ -47,12 +47,14 @@ export default function LoginScreen() {
                 isMailFocused && { borderColor: "#FF6C00" },
               ]}
               placeholder="Адреса електронної пошти"
-				  value={state.mail}
+              value={state.mail}
               placeholderTextColor="#BDBDBD"
               autoComplete="email"
               onBlur={() => setIsMailFocused(false)}
               onFocus={() => setIsMailFocused(true)}
-              onChangeText={(value) => setState((prevState) => ({...prevState, mail: value}))}
+              onChangeText={(value) =>
+                setState((prevState) => ({ ...prevState, mail: value }))
+              }
             ></TextInput>
           </View>
           <View>
@@ -66,12 +68,14 @@ export default function LoginScreen() {
                 ]}
                 secureTextEntry={showPassword ? false : true}
                 placeholder="Пароль"
-					 value={state.password}
+                value={state.password}
                 placeholderTextColor="#BDBDBD"
                 autoComplete="password"
                 onBlur={() => setIsPasswordFocused(false)}
                 onFocus={() => setIsPasswordFocused(true)}
-                onChangeText={(value) => setState((prevState) => ({...prevState, password: value}))}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, password: value }))
+                }
               ></TextInput>
             </KeyboardAvoidingView>
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>

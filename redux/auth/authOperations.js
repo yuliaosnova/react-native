@@ -7,7 +7,6 @@ import {
 } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { authSlice } from "./authReducer";
-import { useDispatch } from "react-redux";
 
 export const registerDB =
   ({ name, mail, password }) =>
@@ -17,24 +16,12 @@ export const registerDB =
 
       const user = await auth.currentUser;
 
-      // await user.updateProfile({
-      //   displayName: name,
-      //   email: mail,
-      // });
-
       await updateProfile(auth.currentUser, {
         displayName: name,
         email: mail,
       });
 
       const { uid, displayName, email } = await auth.currentUser;
-
-      console.log("createUser", uid, displayName, email);
-
-      // const userUpdateProfile = {
-      //   nickName: displayName,
-      //   userId: uid,
-      // };
 
       dispatch(
         authSlice.actions.updateUserProfile({
@@ -65,19 +52,6 @@ export const loginDB =
     }
   };
 
-// export const updateUserProfile = async (update) => {
-//   const user = auth.currentUser;
-//   // якщо такий користувач знайдений
-//   if (user) {
-//     // оновлюємо його профайл
-//     try {
-//       await updateProfile(user, update);
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
-// };
-
 export const authStateChangeUser = () => async (dispatch, getState) => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -94,5 +68,5 @@ export const authStateChangeUser = () => async (dispatch, getState) => {
 
 export const authSignOutUser = () => async (dispatch) => {
   await signOut(auth);
-    dispatch(authSlice.actions.authSignOut());
+  dispatch(authSlice.actions.authSignOut());
 };

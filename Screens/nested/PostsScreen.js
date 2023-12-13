@@ -22,20 +22,15 @@ import { getUserLetter } from "../../helpers/getUserLetter";
 export default function PostsScreen() {
   const navigation = useNavigation();
   const [posts, setPosts] = useState([]);
-  //   const { nickName, email, userId } = useSelector((state) => state.auth);
 
   useEffect(() => {
     getAllPosts();
   }, []);
 
-  //   if (nickName) {
-  //     userNameAvatar = nickName.trim().slice(0, 1).toUpperCase();
-  //   }
-
   const getAllPosts = async () => {
     const postsRef = collection(db, "posts");
 
-    onSnapshot(postsRef, orderBy("date", "desc"), (querySnapshot) => {
+    onSnapshot(postsRef, orderBy("timestamp", "desc"), (querySnapshot) => {
       const documents = querySnapshot.docs.map((doc) => {
         return {
           ...doc.data(),
@@ -91,7 +86,6 @@ export default function PostsScreen() {
                 <AntDesign name="like2" size={24} style={styles.icon} />
                 <Text style={styles.info}>0</Text>
                 <TouchableOpacity
-                  //   style={styles.place}
                   onPress={() =>
                     navigation.navigate("Map", {
                       location: item.location,
