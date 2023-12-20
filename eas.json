@@ -10,7 +10,11 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+		"env": {
+			"EXPO_PUBLIC_API_KEY": "AIzaSyDCJ_DYZaPUkWq8RYFbm3uD3ULVosDkvoc"
+		 }
+	 }
   },
   "submit": {
     "production": {}

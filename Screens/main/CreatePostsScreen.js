@@ -22,7 +22,12 @@ import {
 import { useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  Timestamp,
+} from "firebase/firestore";
 import { db, storage } from "../../firebase/config";
 import { uriToBlob } from "../../helpers/uriToBlob";
 import { useSelector } from "react-redux";
@@ -35,6 +40,7 @@ export default function CreatePostsScreen() {
   const [place, setPlace] = useState("");
   const [location, setLocation] = useState("");
   const navigation = useNavigation();
+  const [hasPermission, setHasPermission] = useState(null);
   let cameraRef = useRef();
 
   const { userId, nickName, email } = useSelector((state) => state.auth);
@@ -50,6 +56,20 @@ export default function CreatePostsScreen() {
       setLocation(locationRes);
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
 
   const takePhoto = async () => {
     if (photo) {
@@ -79,7 +99,7 @@ export default function CreatePostsScreen() {
   const publish = async () => {
     const storedPhoto = await savePhotoToStorage(photo);
 
-   await addDoc(collection(db, "posts"), {
+    await addDoc(collection(db, "posts"), {
       photo: storedPhoto,
       photoName,
       location: location,
@@ -88,7 +108,7 @@ export default function CreatePostsScreen() {
       userName: nickName,
       userEmail: email,
       commentsCount: 0,
-		timestamp: Timestamp.fromDate(new Date("December 10, 1815")),
+      timestamp: Timestamp.fromDate(new Date("December 10, 1815")),
     });
     deletePost();
     navigation.navigate("Home", { screen: "PostsScreen" });
@@ -105,7 +125,7 @@ export default function CreatePostsScreen() {
 
     return uploadBytes(imagesRef, blob).then(async (snapshot) => {
       const url = await getDownloadURL(snapshot.ref);
-		 return url;
+      return url;
     });
   }
 

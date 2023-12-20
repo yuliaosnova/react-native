@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "react-native-prj",
-    "slug": "react-native-prj",
+    "slug": "rn",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -32,8 +32,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "22ba3566-6a50-470a-8d40-ab441b9a6487"
+        "projectId": "d05850a6-98bf-4999-b9c5-9b07ac6c99d0"
       }
-    }
+    },
+    "owner": "yulia_osn"
   }
 }
